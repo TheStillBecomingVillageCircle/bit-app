@@ -104,8 +104,8 @@ drop policy if exists "Members read their partnerships" on public.partnerships;
 create policy "Members read their partnerships" on public.partnerships for select to authenticated using (auth.uid() in (member_one, member_two));
 drop policy if exists "Users create partnership invitations" on public.partnerships;
 create policy "Users create partnership invitations" on public.partnerships for insert to authenticated with check (member_one = auth.uid() and member_two is null and status = 'pending');
-drop policy if exists "Members update partnerships" on public.partnerships;
-create policy "Members update partnerships" on public.partnerships for update to authenticated using (auth.uid() in (member_one, member_two)) with check (auth.uid() in (member_one, member_two));
+-- No client-side update policy for partnerships: invite acceptance must be
+-- handled server-side so one partner cannot add the other or activate a space alone.
 
 drop policy if exists "Inviter sees own invites" on public.partnership_invites;
 create policy "Inviter sees own invites" on public.partnership_invites for select to authenticated using (inviter_id = auth.uid());
