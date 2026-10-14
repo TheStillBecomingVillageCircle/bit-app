@@ -399,21 +399,25 @@ $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').va
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('sendInvite').addEventListener('click',async()=>{
  if(!invitation||!invitationLink){toast('Prepare your secure invitation first.');return}
- if(!supabaseClient){toast('BIT account service is unavailable. Refresh and try again.');return}
- const contact=$('inviteContact').value.trim().toLowerCase();
- const button=$('sendInvite');button.disabled=true;button.textContent='Sending invitation…';
+ const button=$('sendInvite');
  try{
-  const {data,error}=await supabaseClient.functions.invoke('send-bit-invite',{body:{email:contact,name:$('partnerName').value.trim()||'my person',note:$('inviteNote').value.trim(),inviteUrl:invitationLink}});
-  if(error)throw error;
-  if(data?.error)throw new Error(data.error);
-  toast('Invitation email sent successfully!');
-  $('inviteVialStatus').textContent='Invitation email sent to '+contact+'. Waiting for them to accept.';
-  button.textContent='Invitation sent ✓';
+  if(navigator.share){
+   await navigator.share({title:'Your invitation to BIT — Becoming Intentional Together',text:invitation,url:invitationLink});
+   toast('Invitation ready to share.');
+   $('inviteVialStatus').textContent='Choose a messaging or email app to send your invitation link.';
+  }else{
+   await navigator.clipboard.writeText(invitation);
+   toast('Invitation copied. Paste it into a message or email.');
+   $('inviteVialStatus').textContent='Invitation copied. Paste it into a message or email to send it.';
+  }
  }catch(e){
-  console.error('BIT email invitation failed:',e);
-  toast(e.message||'Email sending is not configured yet.');
-  button.textContent='Send invitation';
- }finally{button.disabled=false;if(button.textContent==='Sending invitation…')button.textContent='Send invitation'}
+  if(e?.name==='AbortError')return;
+  console.error('BIT share failed:',e);
+  try{
+   const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();
+   toast('Invitation copied. Paste it into a message or email.');
+  }catch(copyError){toast('Could not open sharing or copy the invitation.')}
+ }
 });
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
 $('agreementBtn').addEventListener('click',()=>{const val=$('agreement').value.trim();const result=$('agreementResult');result.classList.remove('hidden');result.textContent=val?'Discussion draft: “I would like us to talk about this agreement together: '+val+'. What feels fair and realistic to each of us, and when should we revisit it?”':'Add an agreement topic first, and we’ll shape it into a discussion draft.'});
