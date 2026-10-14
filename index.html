@@ -384,7 +384,7 @@ $('makeInvite').addEventListener('click',async()=>{
   if(inviteError)throw inviteError;
   invitationLink='https://thestillbecomingvillagecircle.github.io/bit-app/?invite='+token;
   const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';
-  invitation='Hey '+name+' 💛\\n\\n'+note+'\\n\\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\\n\\nTap this personal invitation link to join our shared BIT space: '+invitationLink+'\\n\\n“Better Communication. Brighter Tomorrows.”';
+  invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\nTap this personal invitation link to join our shared BIT space: '+invitationLink+'\n\n“Better Communication. Brighter Tomorrows.”';
   $('invitePreview').textContent=invitation;
   if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
   if($('inviteOtherName'))$('inviteOtherName').textContent=name;
