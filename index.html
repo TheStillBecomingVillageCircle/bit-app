@@ -50,11 +50,11 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <div class="pill">A little intention goes a long way ✦</div>
 </header>
 <nav class="nav" aria-label="Main navigation">
- <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="BIT Laboratory"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Lab</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Invite and start recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Invite</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
+ <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="Private reflection"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Reflect</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Invite and start recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Invite</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
 </nav>
 <main>
 <section id="home" class="view active">
- <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" data-go="lab">🧪 Start in the BIT Laboratory</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
+ <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
  <div class="grid">
   <article class="card span4"><div class="cardhead"><div class="glyph">🧪</div><h3>Reflect privately</h3></div><p>Sort through what you're feeling before deciding what you want to say.</p><button class="btn secondary" data-go="lab">Private Reflection</button></article>
   <article class="card span4"><div class="cardhead"><div class="glyph">💬</div><h3>Communicate clearly</h3></div><p>Review a message and make it more specific without erasing your feelings.</p><button class="btn secondary" data-go="messages">Open messages</button></article>
@@ -130,10 +130,9 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <button class="btn secondary" id="openRecipeGame">🧪 Preview the shared game</button>
   </div>
  </div>
-</section>
-<section id="recipe" class="view">
- <h1 class="sectiontitle">Your Shared Recipe 🧪</h1><p class="sectionintro">The person you invited is the person you explore with. Choose participant colors, answer questions, and see what you discover together. This is a local demo until real accounts and invitations are connected.</p>
- <div class="card labintro">
+<div id="sharedGameArea" class="hidden">
+ <h2 class="sectiontitle">Now, let’s play together 🧪</h2><p class="sectionintro">The person you invited is the person you explore with. Choose participant colors, answer questions, and see what you discover together. This is a local demo until real accounts and invitations are connected.</p>
+ <div class="card labintro" style="margin-top:16px">
   <div class="eyebrow">Your people · Your colors · Your recipe</div>
   <div class="field"><label for="labGroupName">Name your shared recipe</label><input id="labGroupName" placeholder="e.g. Understanding"></div>
   <div class="grid" style="margin-top:0"><div class="field span6"><label for="labPeople">How many people are participating?</label><select id="labPeople"><option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="5">5 people</option><option value="6">6 people</option></select></div><div class="field span6"><label for="labType">What kind of connection?</label><select id="labType"><option>Romantic relationship</option><option>Polyamorous relationship</option><option>Family</option><option>Friendship</option><option>Chosen family</option><option>Other meaningful relationship</option></select></div></div>
@@ -143,7 +142,8 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
   <div id="labQuestionArea" class="hidden"></div><div id="labRecipeArea" class="hidden"></div>
   <p class="small muted" style="margin:0">Demo only: the invite and game do not yet share data across accounts. Real invitation acceptance and synchronized vials are a later backend step.</p>
  </div>
-</section>
+</div></section>
+
 <section id="tools" class="view">
  <h1 class="sectiontitle">Relationship tools</h1><p class="sectionintro">Small shared practices can make room for better conversations. These tools are demonstrations; shared syncing is not connected yet.</p>
  <div class="grid">
@@ -163,8 +163,8 @@ const prompts=["Before you respond, get curious: what do you want your person to
 let pIndex=0;let reflections=[];let messages=[];
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
 function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id || (id==='recipe'&&b.dataset.view==='invite')));window.scrollTo({top:0,behavior:'smooth'})}
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.view)));
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.view)}));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.go==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.go)}));
 $('newPrompt').addEventListener('click',()=>{pIndex=(pIndex+1)%prompts.length;$('dailyPrompt').textContent=prompts[pIndex]});
 
 const labQuestions=[
@@ -253,7 +253,7 @@ $('checkMessage').addEventListener('click',()=>{const t=$('messageDraft').value.
 function renderMessages(){const list=$('messageList');list.innerHTML=messages.length?'':'<div class="empty"><div class="glyph">♡</div><h3>No messages yet</h3><p>Your conversation will appear here in this demo.</p></div>';messages.forEach(m=>{const d=document.createElement('div');d.className='message mine';const w=document.createElement('div');w.className='who';w.textContent='YOU · DEMO';const body=document.createElement('div');body.className='body';body.textContent=m;d.append(w,body);list.append(d)});$('messageCount').textContent=messages.length}
 let invitation='';
 $('makeInvite').addEventListener('click',()=>{const name=$('partnerName').value.trim()||'my person';const contact=$('inviteContact').value.trim();const color=$('inviteColor').value;if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';if($('inviteOtherName'))$('inviteOtherName').textContent=name;const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\n“Better Communication. Brighter Tomorrows.”';$('invitePreview').textContent=invitation; $('inviteLiquid').style.height='100%';$('inviteProgress').style.width='100%';$('inviteVialTitle').textContent='Your vial is full! ✨';$('inviteVialStatus').textContent='Invitation prepared'+(contact?' for '+contact:'')+'. Your person chooses their own color when they join.';toast('Your vial is full! Invitation ready to share.')});
-$('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);go('recipe')});
+$('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('shareInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}if(navigator.share){try{await navigator.share({title:'BIT — Becoming Intentional Together',text:invitation})}catch(e){}}else{toast('Use Copy invitation, then paste it into your messaging app.')}});
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
