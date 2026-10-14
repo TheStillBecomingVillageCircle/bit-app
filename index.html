@@ -399,25 +399,14 @@ $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').va
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('sendInvite').addEventListener('click',async()=>{
  if(!invitation||!invitationLink){toast('Prepare your secure invitation first.');return}
- const button=$('sendInvite');
- try{
-  if(navigator.share){
-   await navigator.share({title:'Your invitation to BIT — Becoming Intentional Together',text:invitation,url:invitationLink});
-   toast('Invitation ready to share.');
-   $('inviteVialStatus').textContent='Choose a messaging or email app to send your invitation link.';
-  }else{
-   await navigator.clipboard.writeText(invitation);
-   toast('Invitation copied. Paste it into a message or email.');
-   $('inviteVialStatus').textContent='Invitation copied. Paste it into a message or email to send it.';
-  }
- }catch(e){
-  if(e?.name==='AbortError')return;
-  console.error('BIT share failed:',e);
-  try{
-   const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();
-   toast('Invitation copied. Paste it into a message or email.');
-  }catch(copyError){toast('Could not open sharing or copy the invitation.')}
- }
+ const contact=$('inviteContact').value.trim().toLowerCase();
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)){toast('Enter a valid email address first.');$('inviteContact').focus();return}
+ const subject='Your invitation to BIT — Becoming Intentional Together';
+ const mailto='mailto:'+encodeURIComponent(contact)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(invitation);
+ $('inviteVialStatus').textContent='Opening an email draft addressed to '+contact+'. Review it and tap Send in your email app.';
+ toast('Opening your email draft…');
+ // Open the recipient-addressed email directly, without the iPhone share sheet.
+ window.location.href=mailto;
 });
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
 $('agreementBtn').addEventListener('click',()=>{const val=$('agreement').value.trim();const result=$('agreementResult');result.classList.remove('hidden');result.textContent=val?'Discussion draft: “I would like us to talk about this agreement together: '+val+'. What feels fair and realistic to each of us, and when should we revisit it?”':'Add an agreement topic first, and we’ll shape it into a discussion draft.'});
