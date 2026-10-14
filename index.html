@@ -49,6 +49,17 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <div class="brand"><div class="logo">BIT</div><div><div class="brandname">BECOMING INTENTIONAL TOGETHER</div><div class="tagline">Better Communication. Brighter Tomorrows.</div></div></div>
  <div class="pill" id="backendStatus">BIT prototype · backend setup</div>
 </header>
+<section class="card" id="accountPanel" style="margin-bottom:16px">
+ <div class="cardhead"><div class="glyph">🔐</div><div><h3 style="margin:0">Your BIT account</h3><div id="accountStatus" class="small muted">Create an account or sign in to begin connecting BIT to your database.</div></div></div>
+ <div id="accountForm">
+  <div class="field"><label for="accountName">Name or nickname</label><input id="accountName" autocomplete="name" placeholder="What should BIT call you?"></div>
+  <div class="field"><label for="accountEmail">Email</label><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+  <div class="field"><label for="accountPassword">Password (at least 6 characters)</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="6" placeholder="Create or enter your password"></div>
+  <div class="actions"><button class="btn" id="createAccountBtn">Create account</button><button class="btn secondary" id="signInBtn">Sign in</button></div>
+ </div>
+ <div id="signedInControls" class="hidden"><div class="notice good" id="signedInMessage">You're signed in.</div><button class="btn secondary" id="signOutBtn">Sign out</button></div>
+ <div id="accountFeedback" class="notice hidden" role="status"></div>
+</section>
 <nav class="nav" aria-label="Main navigation">
  <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="Private reflection"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Reflect</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Together: invite and build your recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Together</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
 </nav>
@@ -188,6 +199,64 @@ try {
   console.error('BIT Supabase client initialization failed', error);
 }
 const $=id=>document.getElementById(id);
+function accountFeedback(message, good=false){const el=$('accountFeedback');el.textContent=message;el.classList.remove('hidden','good','warn');el.classList.add('notice',good?'good':'warn')}
+function showAccount(user){
+ const form=$('accountForm'), controls=$('signedInControls'), status=$('accountStatus');
+ if(user){form.classList.add('hidden');controls.classList.remove('hidden');status.textContent='Account connected';$('signedInMessage').textContent='Signed in as '+(user.email||'your BIT account')+'.'}
+ else{form.classList.remove('hidden');controls.classList.add('hidden');status.textContent='Create an account or sign in to begin connecting BIT to your database.'}
+}
+async function saveProfile(user, displayName){
+ if(!supabaseClient||!user)return;
+ const payload={id:user.id,display_name:displayName||user.user_metadata?.display_name||user.email||''};
+ const {error}=await supabaseClient.from('profiles').upsert(payload,{onConflict:'id'});
+ if(error)console.warn('BIT profile save needs attention:',error.message);
+}
+async function createAccount(){
+ if(!supabaseClient){accountFeedback('BIT could not connect to its account service. Refresh the page and try again.');return}
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value,name=$('accountName').value.trim();
+ if(!email||!password){accountFeedback('Enter your email and password first.');return}
+ if(password.length<6){accountFeedback('Use a password with at least 6 characters.');return}
+ const button=$('createAccountBtn');button.disabled=true;button.textContent='Creating…';
+ try{
+  const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name}}});
+  if(error)throw error;
+  if(data.user&&data.session){
+   await saveProfile(data.user,name);showAccount(data.user);accountFeedback('Your account was created and you are signed in.',true);
+  }else{
+   accountFeedback('Check your email for Supabase’s confirmation message. After confirming, return here and sign in.',true);
+  }
+ }catch(e){accountFeedback(e.message||'Could not create the account. Please try again.')}
+ finally{button.disabled=false;button.textContent='Create account'}
+}
+async function signIn(){
+ if(!supabaseClient){accountFeedback('BIT could not connect to its account service. Refresh the page and try again.');return}
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value;
+ if(!email||!password){accountFeedback('Enter your email and password first.');return}
+ const button=$('signInBtn');button.disabled=true;button.textContent='Signing in…';
+ try{
+  const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+  if(error)throw error;
+  await saveProfile(data.user,$('accountName').value.trim());showAccount(data.user);accountFeedback('You are signed in to BIT.',true);
+ }catch(e){accountFeedback(e.message||'Could not sign in. Check your email and password.')}
+ finally{button.disabled=false;button.textContent='Sign in'}
+}
+$('createAccountBtn').addEventListener('click',createAccount);
+$('signInBtn').addEventListener('click',signIn);
+$('signOutBtn').addEventListener('click',async()=>{
+ if(!supabaseClient)return;
+ const {error}=await supabaseClient.auth.signOut();
+ if(error){accountFeedback(error.message);return}
+ showAccount(null);accountFeedback('You are signed out.',true);
+});
+if(supabaseClient){
+ supabaseClient.auth.getSession().then(async({data,error})=>{
+  if(error){accountFeedback(error.message);return}
+  const user=data.session?.user;
+  if(user){showAccount(user);await saveProfile(user)}
+ });
+ supabaseClient.auth.onAuthStateChange((_event,session)=>showAccount(session?.user||null));
+}
+
 const prompts=["Before you respond, get curious: what do you want your person to understand—not just hear?","Can you name the feeling without turning it into a verdict about your person?","What is one specific request that would help you feel understood?","What do you know for sure, and what are you filling in because you feel hurt or uncertain?","What would listening look like if neither of you had to lose for the other to be heard?"];
 let pIndex=0;let reflections=[];let messages=[];
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
