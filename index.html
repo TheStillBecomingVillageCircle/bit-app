@@ -398,15 +398,29 @@ $('makeInvite').addEventListener('click',async()=>{
 $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('sendInvite').addEventListener('click',async()=>{
- if(!invitation||!invitationLink){toast('Prepare your secure invitation first.');return}
+ if(!invitation||!invitationLink){
+  toast('First tap Prepare invitation.');
+  $('makeInvite').scrollIntoView({behavior:'smooth',block:'center'});
+  $('makeInvite').focus();
+  return;
+ }
  const contact=$('inviteContact').value.trim().toLowerCase();
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)){toast('Enter a valid email address first.');$('inviteContact').focus();return}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)){
+  toast('Enter a valid email address first.');
+  $('inviteContact').focus();
+  return;
+ }
  const subject='Your invitation to BIT — Becoming Intentional Together';
- const mailto='mailto:'+encodeURIComponent(contact)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(invitation);
- $('inviteVialStatus').textContent='Opening an email draft addressed to '+contact+'. Review it and tap Send in your email app.';
- toast('Opening your email draft…');
- // Open the recipient-addressed email directly, without the iPhone share sheet.
- window.location.href=mailto;
+ const mailto='mailto:'+contact+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(invitation);
+ $('inviteVialStatus').textContent='If your email app does not open, your invitation is still shown on this screen. Use Copy Invitation to copy it.';
+ toast('Opening your email app…');
+ // A real anchor click is more reliable on mobile browsers than assigning location.
+ const link=document.createElement('a');
+ link.href=mailto;
+ link.style.display='none';
+ document.body.appendChild(link);
+ link.click();
+ link.remove();
 });
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
 $('agreementBtn').addEventListener('click',()=>{const val=$('agreement').value.trim();const result=$('agreementResult');result.classList.remove('hidden');result.textContent=val?'Discussion draft: “I would like us to talk about this agreement together: '+val+'. What feels fair and realistic to each of us, and when should we revisit it?”':'Add an agreement topic first, and we’ll shape it into a discussion draft.'});
