@@ -47,7 +47,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 <div class="shell">
 <header class="top">
  <div class="brand"><div class="logo">BIT</div><div><div class="brandname">BECOMING INTENTIONAL TOGETHER</div><div class="tagline">Better Communication. Brighter Tomorrows.</div></div></div>
- <div class="pill">A little intention goes a long way ✦</div>
+ <div class="pill" id="backendStatus">BIT prototype · backend setup</div>
 </header>
 <nav class="nav" aria-label="Main navigation">
  <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="Private reflection"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Reflect</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Invite and start recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Invite</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
@@ -156,8 +156,29 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 <footer class="foot">BIT · Becoming Intentional Together<br>Prototype edition · Not yet connected to real accounts, cloud storage, or AI.</footer>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function(){
+// Supabase public client configuration. Publishable keys are intended for browser apps;
+// row-level security must remain enabled and secret/service-role keys must never be used here.
+const SUPABASE_URL = 'https://tfagjvpwwcwwmhafxonz.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_4HK_2MBjSbcNbDWVz1Yo6g_Sjf1FbIS';
+let supabaseClient = null;
+try {
+  if (window.supabase && window.supabase.createClient) {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+    const status = document.getElementById('backendStatus');
+    if (status) status.textContent = 'BIT backend configured · accounts next';
+    window.bitSupabase = supabaseClient;
+  } else {
+    const status = document.getElementById('backendStatus');
+    if (status) status.textContent = 'Backend library did not load · refresh to retry';
+  }
+} catch (error) {
+  const status = document.getElementById('backendStatus');
+  if (status) status.textContent = 'Backend setup needs attention';
+  console.error('BIT Supabase client initialization failed', error);
+}
 const $=id=>document.getElementById(id);
 const prompts=["Before you respond, get curious: what do you want your person to understand—not just hear?","Can you name the feeling without turning it into a verdict about your person?","What is one specific request that would help you feel understood?","What do you know for sure, and what are you filling in because you feel hurt or uncertain?","What would listening look like if neither of you had to lose for the other to be heard?"];
 let pIndex=0;let reflections=[];let messages=[];
