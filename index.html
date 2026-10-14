@@ -131,7 +131,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <div class="cardhead"><div class="glyph">🧪</div><h3>Your shared recipe begins here</h3></div>
    <p>Your invitation and your game are connected. Once the other participant joins, they choose their own liquid color. Then you can answer questions, learn about each other, and combine your colors into one shared recipe.</p>
    <div id="invitePreview" class="invitecode">Your invitation will appear here.</div>
-   <div class="actions" style="margin-top:12px"><button class="btn" id="sendInvite">Send invitation</button></div><p class="small muted">BIT creates a secure, single-use invitation link. Your email opens addressed to them; review it and tap Send.</p>
+   <div class="actions" style="margin-top:12px"><button class="btn" id="sendInvite">Send invitation</button></div><p class="small muted">BIT sends your secure invitation directly by email.</p>
    <div class="divider" style="height:1px;background:var(--line);margin:20px 0"></div>
    <div class="eyebrow">Step 2 · When they join</div>
    <div class="vialstage" id="invitePairStage">
@@ -397,7 +397,24 @@ $('makeInvite').addEventListener('click',async()=>{
 });
 $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
-$('sendInvite').addEventListener('click',()=>{if(!invitation||!invitationLink){toast('Prepare your secure invitation first.');return}const contact=$('inviteContact').value.trim();const subject='Your invitation to BIT — Becoming Intentional Together';window.location.href='mailto:'+encodeURIComponent(contact)+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(invitation)});
+$('sendInvite').addEventListener('click',async()=>{
+ if(!invitation||!invitationLink){toast('Prepare your secure invitation first.');return}
+ if(!supabaseClient){toast('BIT account service is unavailable. Refresh and try again.');return}
+ const contact=$('inviteContact').value.trim().toLowerCase();
+ const button=$('sendInvite');button.disabled=true;button.textContent='Sending invitation…';
+ try{
+  const {data,error}=await supabaseClient.functions.invoke('send-bit-invite',{body:{email:contact,name:$('partnerName').value.trim()||'my person',note:$('inviteNote').value.trim(),inviteUrl:invitationLink}});
+  if(error)throw error;
+  if(data?.error)throw new Error(data.error);
+  toast('Invitation email sent successfully!');
+  $('inviteVialStatus').textContent='Invitation email sent to '+contact+'. Waiting for them to accept.';
+  button.textContent='Invitation sent ✓';
+ }catch(e){
+  console.error('BIT email invitation failed:',e);
+  toast(e.message||'Email sending is not configured yet.');
+  button.textContent='Send invitation';
+ }finally{button.disabled=false;if(button.textContent==='Sending invitation…')button.textContent='Send invitation'}
+});
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
 $('agreementBtn').addEventListener('click',()=>{const val=$('agreement').value.trim();const result=$('agreementResult');result.classList.remove('hidden');result.textContent=val?'Discussion draft: “I would like us to talk about this agreement together: '+val+'. What feels fair and realistic to each of us, and when should we revisit it?”':'Add an agreement topic first, and we’ll shape it into a discussion draft.'});
 })();
