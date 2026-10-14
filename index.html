@@ -369,7 +369,7 @@ $('makeInvite').addEventListener('click',async()=>{
  const contact=$('inviteContact').value.trim().toLowerCase();
  const color=$('inviteColor').value;
  if(!supabaseClient){toast('BIT account service is unavailable. Refresh and try again.');return}
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(contact)){toast('Enter a valid email address for your person.');$('inviteContact').focus();return}
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)){toast('Enter a valid email address for your person.');$('inviteContact').focus();return}
  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
  if(userError||!user){toast('Sign in to BIT before creating an invitation.');accountFeedback('Sign in to BIT before creating an invitation.');return}
  const button=$('makeInvite');button.disabled=true;button.textContent='Creating secure invitation…';
