@@ -29,6 +29,18 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .labprogress{height:8px;background:#08272e;border-radius:999px;overflow:hidden;border:1px solid var(--line);margin:8px 0 14px}.labprogress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--aqua),var(--mint),var(--gold));transition:width .45s ease}
 @media(max-width:450px){.vial{width:50px;height:105px}.vialstage{gap:8px;padding-inline:0}}
 
+
+/* Visible invitation vial and participant-owned colors */
+.invitevialrow{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--line);border-radius:18px;background:radial-gradient(ellipse at center,#1c5b5a66,transparent 72%);margin:14px 0}
+.invitevial{width:58px;height:104px;flex:0 0 58px;border:2px solid #b9e6dcaa;border-radius:13px 13px 17px 17px;position:relative;overflow:hidden;background:#ffffff09;box-shadow:inset 0 0 12px #ffffff14,0 0 20px #39d9d022}
+.invitevial:before{content:"";position:absolute;z-index:2;top:-8px;left:16px;width:22px;height:13px;border:2px solid #b9e6dcaa;border-radius:4px;background:#103c40}
+.invitevial .liquid{position:absolute;bottom:0;left:0;right:0;transition:height .55s ease}
+.colorfield{display:flex;align-items:center;gap:10px;margin:12px 0;color:#dce8e2;font-size:13px;font-weight:650}
+.colorfield input[type=color]{width:48px;height:42px;padding:3px;border-radius:10px;border:1px solid var(--line);background:#08272e}
+.personcolors{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin:12px 0}
+.personcolor{padding:12px;border:1px solid var(--line);border-radius:14px;background:#0a3037}
+.personcolor label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px}
+
 </style>
 </head>
 <body>
@@ -70,6 +82,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
   <div id="labGameArea">
     <div class="field"><label for="labSelfName">What name should appear on your vial?</label><input id="labSelfName" placeholder="Your name or nickname"></div>
     <div class="field"><label for="labPartnerNames">Names or nicknames of the other participants</label><input id="labPartnerNames" placeholder="Separate names with commas"></div>
+    <div id="labColorPickers" class="personcolors"></div>
     <button class="btn gold" id="labStart">🧪 Begin our experiment</button>
   </div>
   <div id="labQuestionArea" class="hidden"></div>
@@ -91,7 +104,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </section>
 <section id="invite" class="view">
  <h1 class="sectiontitle">Invite your person 💌</h1><p class="sectionintro">BIT works best when both people choose to participate. An invitation is not consent to share private notes; each person should have their own account and accept before a shared space is created.</p>
- <div class="grid"><div class="card span6"><div class="eyebrow">Your invitation</div><div class="field"><label for="partnerName">What should we call your person?</label><input id="partnerName" placeholder="e.g. my favorite human"></div><div class="field"><label for="inviteContact">Email or phone (optional for this demo)</label><input id="inviteContact" placeholder="Email or phone number"></div><div class="field"><label for="inviteNote">Add a personal note</label><textarea id="inviteNote" placeholder="I'd love for us to try a new way of hearing each other…"></textarea></div><button class="btn gold" id="makeInvite">Create invitation message</button></div>
+ <div class="grid"><div class="card span6"><div class="eyebrow">Your invitation</div><div class="invitevialrow"><div class="invitevial"><div class="liquid" id="inviteLiquid" style="height:0%;background:linear-gradient(0deg,#39d9d0,#7df0d0)"></div></div><div><strong id="inviteVialTitle">Your vial is ready to begin</strong><p id="inviteVialStatus" class="small muted" style="margin:5px 0 0">Complete each step and watch your liquid rise.</p><div class="labprogress" style="min-width:130px"><span id="inviteProgress"></span></div></div></div>
+<div class="colorfield"><label for="inviteColor" style="margin:0">Choose your liquid color</label><input id="inviteColor" type="color" value="#39d9d0" aria-label="Choose your vial liquid color"><span id="inviteColorName">Aqua</span></div>
+<div class="field"><label for="partnerName">What should we call your person?</label><input id="partnerName" placeholder="e.g. my favorite human"></div><div class="field"><label for="inviteContact">Email or phone (optional for this demo)</label><input id="inviteContact" placeholder="Email or phone number"></div><div class="field"><label for="inviteNote">Add a personal note</label><textarea id="inviteNote" placeholder="I'd love for us to try a new way of hearing each other…"></textarea></div><button class="btn gold" id="makeInvite">Complete vial & create invitation</button>
+<div class="notice">Your person's vial will appear when they join, and they will choose their own color. In this prototype, the invitation is only text; it does not register or notify another account.</div></div>
  <div class="card span6"><div class="cardhead"><div class="glyph">♡</div><h3>Invitation preview</h3></div><p class="muted">Your person should feel invited, never pressured.</p><div id="invitePreview" class="invitecode">Your invitation will appear here.</div><div class="actions" style="margin-top:12px"><button class="btn secondary" id="copyInvite">Copy invitation</button><button class="btn secondary" id="shareInvite">Share…</button></div><div class="notice">This prototype can create and share invitation text, but it does not yet create accounts, deliver email/SMS, or link two users together.</div></div></div>
 </section>
 <section id="tools" class="view">
@@ -123,14 +139,14 @@ const labQuestions=[
  {q:"What can strengthen a relationship?",a:["Clear requests and honest boundaries","Expecting people to read minds","Pretending nothing hurt"],hint:"Understanding does not require agreement, and boundaries still matter."},
  {q:"What does a wrong guess mean in this game?",a:["A chance to learn something new","Proof someone doesn't care","A reason to lose your vial"],hint:"This is about discovery, not measuring love or worth."}
 ];
-let labParticipants=[],labAnswers=[],labQ=0,labScore=0;
+let labParticipants=[],labAnswers=[],labQ=0,labScore=0,labColors=['#39d9d0','#ffc0bd','#e8c77b','#9b8cff','#8be39a','#ff9f43'];
 function renderVials(count,names,level){
  const stage=$('vialStage');stage.innerHTML='';
  const colors=['aqua','rose','gold'];
  for(let i=0;i<count;i++){
   const person=document.createElement('div');person.className='vialperson';
   const vial=document.createElement('div');vial.className='vial';
-  const liquid=document.createElement('div');liquid.className='liquid';liquid.style.height=(level[i]||0)+'%';vial.append(liquid);
+  const liquid=document.createElement('div');liquid.className='liquid';liquid.style.height=(level[i]||0)+'%';liquid.style.background='linear-gradient(0deg,'+(labColors[i]||labColors[i%labColors.length])+','+(labColors[i]||'#39d9d0')+'cc)';liquid.style.boxShadow='0 0 20px '+(labColors[i]||'#39d9d0')+'66';vial.append(liquid);
   const name=document.createElement('div');name.className='vialname';name.textContent=names[i]||('Participant '+(i+1));
   const status=document.createElement('div');status.className='vialstatus';status.textContent=(level[i]||0)>=100?'Ready to combine':(level[i]||0)>0?'Recipe in progress':'Their color awaits';
   person.append(vial,name,status);stage.append(person);
@@ -166,7 +182,35 @@ function finishLab(){
  $('labRecipeArea').innerHTML='<div class="notice good"><strong>All ingredients added!</strong><br>'+group+' has a recipe in progress. The goal was never perfect answers—it was making space to learn.</div><div class="recipe-heart">💗</div><h2 style="text-align:center">Our recipe is taking shape</h2><p style="text-align:center">'+names+'</p><div class="featurelist"><div class="feature">🧪 <span><strong>Curiosity:</strong> asking instead of assuming.</span></div><div class="feature">💚 <span><strong>Individuality:</strong> each person keeps their own color.</span></div><div class="feature">✨ <span><strong>Shared intention:</strong> choosing what to build together.</span></div></div><div class="notice">You completed a demo round with '+labScore+' of 4 understanding-minded choices. This score is just for play and does not measure love, compatibility, or relationship health.</div><button class="btn gold" id="labReplay">Run another experiment</button>';
  $('labReplay').addEventListener('click',()=>{ $('labGameArea').classList.remove('hidden');$('labRecipeArea').classList.add('hidden');$('labQuestionArea').classList.add('hidden');renderVials(Number($('labPeople').value),[],[]);});
 }
-$('labPeople').addEventListener('change',()=>{const count=Number($('labPeople').value);renderVials(count,[],[]);});
+
+function drawLabColorPickers(){
+ const count=Number($('labPeople').value),names=[$('labSelfName').value.trim()||'You',...$('labPartnerNames').value.split(',').map(x=>x.trim()).filter(Boolean)];
+ const wrap=$('labColorPickers');if(!wrap)return;wrap.innerHTML='<div class="small muted" style="grid-column:1/-1">Everyone chooses their own color. These are previews for this demo; real participants will choose their own after joining.</div>';
+ for(let i=0;i<count;i++){
+  const card=document.createElement('div');card.className='personcolor';
+  const label=document.createElement('label');label.textContent=(names[i]||('Participant '+(i+1)))+' · liquid color';
+  const input=document.createElement('input');input.type='color';input.value=labColors[i]||'#39d9d0';input.setAttribute('aria-label',label.textContent);input.style.cssText='width:100%;height:38px;border:0;background:transparent';
+  input.addEventListener('input',()=>{labColors[i]=input.value;renderVials(count,names,labParticipants.length?labParticipants.map((_,j)=>{const el=document.querySelectorAll('#vialStage .liquid')[j];return el?parseFloat(el.style.height)||0:0}):[])});card.append(label,input);wrap.append(card);
+ }
+}
+$('labSelfName').addEventListener('input',drawLabColorPickers);
+$('labPartnerNames').addEventListener('input',drawLabColorPickers);
+$('labPeople').addEventListener('change',()=>{const count=Number($('labPeople').value);drawLabColorPickers();renderVials(count,[],[]);});
+drawLabColorPickers();
+$('inviteColor').addEventListener('input',()=>{
+ const color=$('inviteColor').value;$('inviteLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
+ $('inviteColorName').textContent=color.toUpperCase();
+});
+function updateInviteVial(){
+ const name=$('partnerName').value.trim(),contact=$('inviteContact').value.trim();
+ const level=(name?45:0)+(contact?40:0);
+ $('inviteLiquid').style.height=level+'%';$('inviteProgress').style.width=level+'%';
+ $('inviteVialTitle').textContent=level>=85?'Your vial is nearly full':name?'Your first ingredient is in':'Your vial is ready to begin';
+ $('inviteVialStatus').textContent=contact?'Contact added · complete the invitation to fill your vial':name?'Name added · add contact details for the next ingredient':'Complete each step and watch your liquid rise.';
+}
+$('partnerName').addEventListener('input',updateInviteVial);
+$('inviteContact').addEventListener('input',updateInviteVial);
+
 
 document.querySelectorAll('[data-fill]').forEach(b=>b.addEventListener('click',()=>{$('rawThought').value+=($('rawThought').value?'\n\n':'')+b.dataset.fill+' ';$('rawThought').focus()}));
 $('reflectBtn').addEventListener('click',()=>{const t=$('rawThought').value.trim();if(!t){toast('Write a little first. No perfect words needed.');return}reflections.push({text:t,date:new Date().toISOString()});$('reflectionCount').textContent=reflections.length;const area=$('reflectionArea');area.classList.remove('hidden');area.innerHTML='<div class="notice good"><strong>Let’s slow it down.</strong><br>Your reflection is saved in this page for this session. Try answering these for yourself before deciding what to share.</div><div class="field"><label for="feeling">1. What feeling is closest to the center of this?</label><input id="feeling" placeholder="e.g. hurt, worried, overlooked, hopeful"></div><div class="field"><label for="need">2. What do you need your person to understand or do?</label><textarea id="need" placeholder="Try one clear sentence…"></textarea></div><div class="field"><label for="request">3. What is a specific request you could make?</label><textarea id="request" placeholder="Could we… / I would appreciate…"></textarea></div><button class="btn" id="draftFromReflection">Create a message draft</button>'; $('draftFromReflection').addEventListener('click',()=>{const f=$('feeling').value.trim(),n=$('need').value.trim(),r=$('request').value.trim();$('messageDraft').value=[f?'I feel '+f+'.':'',n,r?'What I am asking for is: '+r:''].filter(Boolean).join('\n\n');go('messages');toast('Draft created. Review it before sending.')});toast('Reflection captured. You get to choose what happens next.')});
@@ -174,7 +218,7 @@ function assess(text){const rules=[{type:'vague-listening',re:/\b(she|he|they|yo
 $('checkMessage').addEventListener('click',()=>{const t=$('messageDraft').value.trim();const a=$('assessment');a.classList.remove('hidden');if(!t){a.innerHTML='<div class="notice warn">Write your message first, and then we can review the wording.</div>';return}const issue=assess(t);if(issue){if(issue.type==='vague-listening'){a.innerHTML='<div class="notice warn"><strong>Let’s make “doesn’t listen” more specific.</strong><br>Your feeling matters. BIT is asking for context—not asking you to prove your feeling or deciding who is right.</div><div class="field"><label for="listenSaid">1. What did you say or ask them to hear?</label><textarea id="listenSaid" placeholder="What were you trying to tell them?" rows="2"></textarea></div><div class="field"><label for="listenDid">2. What did they actually say or do?</label><textarea id="listenDid" placeholder="Describe what happened, as specifically as you can." rows="2"></textarea></div><div class="field"><label for="listenNeed">3. What would listening have looked like to you?</label><textarea id="listenNeed" placeholder="For example: let me finish, acknowledge what I said, answer my question, or help solve the problem." rows="2"></textarea></div><div class="actions"><button class="btn" id="buildSpecific">Build a more specific draft</button><button class="btn secondary" id="keepOriginal">Keep my original wording</button></div><p class="muted small">Your answers are used only to build this draft in this demo. They are not sent to a partner.</p>'; $('buildSpecific').addEventListener('click',()=>{const said=$('listenSaid').value.trim(),did=$('listenDid').value.trim(),need=$('listenNeed').value.trim();if(!said||!did||!need){toast('Answer all three questions to build a specific draft.');return}$('messageDraft').value='When I said or asked '+said+', I experienced you '+did+'. I felt unheard, and I would have felt listened to if you had '+need+'. Can we talk about this?';a.classList.add('hidden');$('messageDraft').focus();toast('Draft built. Review it and change anything that does not sound like you.')});$('keepOriginal').addEventListener('click',()=>{$('messageDraft').focus();toast('Your original wording is still here. You can revise it in your own words.')})}else{a.innerHTML='<div class="notice warn"><strong>Let’s look at this wording together.</strong><br>'+issue.why+'<br><br>Your concern still matters. Edit the message so it says what happened, how it affected you, or what boundary you need—without the wording that may escalate things.</div><div class="actions"><button class="btn secondary" id="editAgain">I’ll revise it</button><button class="btn" id="soften">Try a calmer starting point</button></div>'; $('editAgain').addEventListener('click',()=>$('messageDraft').focus());$('soften').addEventListener('click',()=>{ $('messageDraft').value='When '+t.replace(/[.!?]+$/,'')+', I felt ____. What I need you to understand is ____. I would like us to ____. ';$('messageDraft').focus();toast('A starting point is ready. Make it sound like you.')})}}else{a.innerHTML='<div class="notice good"><strong>No obvious wording flags found.</strong><br>That does not guarantee the message will land well. Read it once more: is it honest, specific, and respectful of both people’s boundaries?</div><button class="btn" id="sendDemo">Add to demo conversation</button>'; $('sendDemo').addEventListener('click',()=>{messages.push(t);renderMessages();$('messageDraft').value='';a.classList.add('hidden');toast('Added to this demo conversation.')})}});
 function renderMessages(){const list=$('messageList');list.innerHTML=messages.length?'':'<div class="empty"><div class="glyph">♡</div><h3>No messages yet</h3><p>Your conversation will appear here in this demo.</p></div>';messages.forEach(m=>{const d=document.createElement('div');d.className='message mine';const w=document.createElement('div');w.className='who';w.textContent='YOU · DEMO';const body=document.createElement('div');body.className='body';body.textContent=m;d.append(w,body);list.append(d)});$('messageCount').textContent=messages.length}
 let invitation='';
-$('makeInvite').addEventListener('click',()=>{const name=$('partnerName').value.trim()||'my person';const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\n“Better Communication. Brighter Tomorrows.”';$('invitePreview').textContent=invitation;toast('Invitation created. You choose whether to share it.')});
+$('makeInvite').addEventListener('click',()=>{const name=$('partnerName').value.trim()||'my person';const contact=$('inviteContact').value.trim();const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\n“Better Communication. Brighter Tomorrows.”';$('invitePreview').textContent=invitation; $('inviteLiquid').style.height='100%';$('inviteProgress').style.width='100%';$('inviteVialTitle').textContent='Your vial is full! ✨';$('inviteVialStatus').textContent='Invitation prepared'+(contact?' for '+contact:'')+'. Your person chooses their own color when they join.';toast('Your vial is full! Invitation ready to share.')});
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('shareInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}if(navigator.share){try{await navigator.share({title:'BIT — Becoming Intentional Together',text:invitation})}catch(e){}}else{toast('Use Copy invitation, then paste it into your messaging app.')}});
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
