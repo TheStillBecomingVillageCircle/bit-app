@@ -371,6 +371,19 @@ async function loadSharedConversation(user){
  activePartnership=partnerships&&partnerships.length?partnerships[0]:null;
  const startBtn=$('startTogetherBtn');if(startBtn){startBtn.textContent=activePartnership?'♡ Open our shared space':'🧪 Start our shared recipe';}
  if(!activePartnership){messages=[];renderMessages();return}
+ const partnerId=activePartnership.member_one===user.id?activePartnership.member_two:activePartnership.member_one;
+ if(partnerId){
+  const {data:partnerProfile,error:profileError}=await supabaseClient.from('profiles').select('display_name').eq('id',partnerId).maybeSingle();
+  if(!profileError&&partnerProfile?.display_name){
+   const partnerName=partnerProfile.display_name.trim();
+   if(partnerName){
+    $('labPartnerNames').value=partnerName;
+    const vialNames=document.querySelectorAll('#vialStage .vialname');
+    if(vialNames[1])vialNames[1].textContent=partnerName;
+    const inviteOther=$('inviteOtherName');if(inviteOther)inviteOther.textContent=partnerName;
+   }
+  }
+ }
  const {data,error}=await supabaseClient.from('messages').select('id,sender_id,body,created_at').eq('partnership_id',activePartnership.id).order('created_at',{ascending:true}).limit(200);
  if(error){console.warn('Could not load BIT messages:',error.message);toast('Your shared space is connected, but messages could not load.');return}
  messages=data||[];renderMessages();
