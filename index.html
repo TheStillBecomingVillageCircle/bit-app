@@ -256,7 +256,7 @@ async function acceptPendingInvite(user){
  inviteAcceptanceStarted=true;
  accountFeedback('Checking your BIT invitation…');
  const {data,error}=await supabaseClient.rpc('accept_partnership_invite',{raw_token:pendingInviteToken});
- if(error){inviteAcceptanceStarted=false;accountFeedback(error.message||'Could not accept this invitation. Check the link and account you signed in with.');return}
+ if(error){inviteAcceptanceStarted=false;const own=/cannot accept your own invitation/i.test(error.message||'');accountFeedback(own?'You are signed into the account that sent this invitation. Sign out, then sign in or create an account using the invited email address to accept it.':(error.message||'Could not accept this invitation. Check the link and account you signed in with.'));return}
  window.history.replaceState({},document.title,window.location.pathname);
  accountFeedback('You joined the shared BIT space. Both accounts are now connected.',true);
  toast('BIT invitation accepted!');
