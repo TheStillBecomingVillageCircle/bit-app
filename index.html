@@ -259,7 +259,8 @@ async function acceptPendingInvite(user){
  if(error){inviteAcceptanceStarted=false;accountFeedback(error.message||'Could not accept this invitation. Check the link and account you signed in with.');return}
  window.history.replaceState({},document.title,window.location.pathname);
  accountFeedback('You joined the shared BIT space. Both accounts are now connected.',true);
- toast('BIT invitation accepted!');\n  await loadSharedConversation(user);
+ toast('BIT invitation accepted!');
+  await loadSharedConversation(user);
 }
 if(supabaseClient){
  supabaseClient.auth.getSession().then(async({data,error})=>{
