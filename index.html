@@ -66,12 +66,13 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 <main>
 <section id="home" class="view active">
  <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
+ <details class="card" style="margin:0 0 18px"><summary style="cursor:pointer;font-weight:750;color:var(--mint)">✦ Today's intention (optional)</summary><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious: what do you want your person to understand—not just hear?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></details>
  <div class="grid">
   <article class="card span4"><div class="cardhead"><div class="glyph">🧪</div><h3>Reflect privately</h3></div><p>Sort through what you're feeling before deciding what you want to say.</p><button class="btn secondary" data-go="lab">Private Reflection</button></article>
   <article class="card span4"><div class="cardhead"><div class="glyph">💬</div><h3>Communicate clearly</h3></div><p>Review a message and make it more specific without erasing your feelings.</p><button class="btn secondary" data-go="messages">Open messages</button></article>
   <article class="card span4"><div class="cardhead"><div class="glyph">♡</div><h3>Build together</h3></div><p>Invite your person or explore relationship tools when you're ready.</p><div class="actions"><button class="btn secondary" data-go="invite">Start together</button><button class="btn secondary" data-go="tools">Tools</button></div></article>
  </div>
- <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:750;color:var(--mint)">✦ Today's intention (optional)</summary><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious: what do you want your person to understand—not just hear?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></details>
+ 
  <div class="small muted" style="text-align:center;margin-top:14px">Demo activity · <span id="reflectionCount">0</span> reflections · <span id="messageCount">0</span> messages</div>
 </section>
 <section id="lab" class="view">
