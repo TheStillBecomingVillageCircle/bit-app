@@ -131,7 +131,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <div class="cardhead"><div class="glyph">🧪</div><h3>Your shared recipe begins here</h3></div>
    <p>Your invitation and your game are connected. Once the other participant joins, they choose their own liquid color. Then you can answer questions, learn about each other, and combine your colors into one shared recipe.</p>
    <div id="invitePreview" class="invitecode">Your invitation will appear here.</div>
-   <div class="actions" style="margin-top:12px"><button class="btn" id="sendInvite">Send invitation</button><button class="btn secondary" id="copyInvite">Copy invitation link</button></div><p class="small muted">BIT prepares a secure invitation link. The Send invitation button opens your email app so you can review and send it yourself.</p>
+   <div class="actions" style="margin-top:12px"><button class="btn" id="sendInvite">Send by email</button><button class="btn secondary" id="shareInvite">Share invitation</button><button class="btn secondary" id="copyInvite">Copy invitation</button></div><p class="small muted">BIT prepares a secure invitation link. The Send invitation button opens your email app so you can review and send it yourself.</p>
    <div class="divider" style="height:1px;background:var(--line);margin:20px 0"></div>
    <div class="eyebrow">Step 2 · When they join</div>
    <div class="vialstage" id="invitePairStage">
@@ -423,6 +423,16 @@ $('makeInvite').addEventListener('click',async()=>{
  finally{button.disabled=false;button.textContent='Prepare invitation'}
 });
 $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
+$('shareInvite').addEventListener('click',async()=>{
+ if(!invitation||!invitationLink){toast('First tap Prepare invitation.');$('makeInvite').scrollIntoView({behavior:'smooth',block:'center'});return}
+ if(navigator.share){
+  try{await navigator.share({title:'BIT — Becoming Intentional Together',text:invitation});toast('Invitation shared.')}
+  catch(e){if(e.name!=='AbortError')toast('Sharing was unavailable. Use Copy invitation instead.')}
+ }else{
+  try{await navigator.clipboard.writeText(invitation);toast('Sharing is not available here. Invitation copied to paste into a message.')}
+  catch(e){toast('Use Copy invitation to copy the text.')}
+ }
+});
 $('copyInvite').addEventListener('click',async()=>{if(!invitation){toast('Create your invitation first.');return}try{await navigator.clipboard.writeText(invitation);toast('Invitation copied!')}catch(e){const ta=document.createElement('textarea');ta.value=invitation;document.body.append(ta);ta.select();document.execCommand('copy');ta.remove();toast('Invitation copied!')}});
 $('copyInvite').addEventListener('click',async()=>{
  if(!invitation||!invitationLink){toast('First tap Prepare invitation.');$('makeInvite').scrollIntoView({behavior:'smooth',block:'center'});return}
