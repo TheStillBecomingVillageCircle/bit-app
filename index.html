@@ -65,7 +65,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </nav>
 <main>
 <section id="home" class="view active">
- <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
+ <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" id="startTogetherBtn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
  <section class="card" aria-labelledby="dailyIntentionTitle" style="margin:0 0 18px"><h3 id="dailyIntentionTitle" style="color:var(--mint);margin:0">✦ Today's intention</h3><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious: what do you want your person to understand—not just hear?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></section>
  <div class="grid">
   <article class="card span4"><div class="cardhead"><div class="glyph">🧪</div><h3>Reflect privately</h3></div><p>Sort through what you're feeling before deciding what you want to say.</p><button class="btn secondary" data-go="lab">Private Reflection</button></article>
@@ -277,7 +277,7 @@ let pIndex=0;let reflections=[];let messages=[];let activePartnership=null;let c
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
 function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id || (id==='recipe'&&b.dataset.view==='invite')));window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.view)}));
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.go==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.go)}));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{if(b.id==='startTogetherBtn'&&activePartnership){go('messages');return}if(b.dataset.go==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.go)}));
 $('newPrompt').addEventListener('click',()=>{pIndex=(pIndex+1)%prompts.length;$('dailyPrompt').textContent=prompts[pIndex]});
 
 const labQuestions=[
@@ -369,6 +369,7 @@ async function loadSharedConversation(user){
  const {data:partnerships,error:pError}=await supabaseClient.from('partnerships').select('id,member_one,member_two,status,created_at').eq('status','active').or('member_one.eq.'+user.id+',member_two.eq.'+user.id).order('created_at',{ascending:false}).limit(1);
  if(pError){console.warn('Could not load BIT partnership:',pError.message);return}
  activePartnership=partnerships&&partnerships.length?partnerships[0]:null;
+ const startBtn=$('startTogetherBtn');if(startBtn){startBtn.textContent=activePartnership?'♡ Open our shared space':'🧪 Start our shared recipe';}
  if(!activePartnership){messages=[];renderMessages();return}
  const {data,error}=await supabaseClient.from('messages').select('id,sender_id,body,created_at').eq('partnership_id',activePartnership.id).order('created_at',{ascending:true}).limit(200);
  if(error){console.warn('Could not load BIT messages:',error.message);toast('Your shared space is connected, but messages could not load.');return}
