@@ -58,7 +58,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
   <div class="actions"><button class="btn" id="createAccountBtn">Create account</button><button class="btn secondary" id="signInBtn">Sign in</button></div>
  </div>
  <div id="signedInControls" class="hidden"><div class="notice good" id="signedInMessage">You're signed in.</div><button class="btn secondary" id="signOutBtn">Sign out</button></div>
- <div id="accountFeedback" class="notice hidden" role="status"></div>
+ <div id="accountFeedback" class="notice hidden" role="status"></div><div id="colorOnboarding" class="card hidden" style="margin-top:14px;border-color:var(--gold)"><h3>🧪 Choose your signature color</h3><p>What color represents you in your BIT connections? Your color is yours to choose, and you can change it later.</p><div class="field"><label for="signatureColor">My vial color</label><input type="color" id="signatureColor" value="#39d9d0"></div><button class="btn" id="saveSignatureColor">Continue with my color</button><p id="colorFeedback" class="small muted" role="status"></p></div>
 </section>
 <nav class="nav" aria-label="Main navigation">
  <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="Private reflection"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Reflect</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Together: invite and build your recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Together</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
@@ -207,6 +207,8 @@ function showAccount(user){
  if(user){form.classList.add('hidden');controls.classList.remove('hidden');status.textContent='Account connected';$('signedInMessage').textContent='Signed in as '+(user.email||'your BIT account')+'.'}
  else{form.classList.remove('hidden');controls.classList.add('hidden');status.textContent='Create an account or sign in to begin connecting BIT to your database.'}
 }
+function showColorOnboarding(user){if(!user)return;const key='bit-color-'+user.id;const existing=localStorage.getItem(key);$('colorOnboarding').classList.toggle('hidden',!!existing);if(existing){$('signatureColor').value=existing;$('inviteColor').value=existing;} }
+$('saveSignatureColor').addEventListener('click',()=>{if(!currentUserId)return;const color=$('signatureColor').value;localStorage.setItem('bit-color-'+currentUserId,color);$('inviteColor').value=color;$('colorOnboarding').classList.add('hidden');toast('Your signature color is ready!');});
 async function saveProfile(user, displayName){
  if(!supabaseClient||!user)return;
  const payload={id:user.id,display_name:displayName||user.user_metadata?.display_name||user.email||''};
@@ -238,7 +240,7 @@ async function signIn(){
  try{
   const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
   if(error)throw error;
-  await saveProfile(data.user,$('accountName').value.trim());showAccount(data.user);accountFeedback('You are signed in to BIT.',true);
+  await saveProfile(data.user,$('accountName').value.trim());showAccount(data.user);showColorOnboarding(data.user);accountFeedback('You are signed in to BIT.',true);
  }catch(e){accountFeedback(e.message||'Could not sign in. Check your email and password.')}
  finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -267,10 +269,10 @@ if(supabaseClient){
  supabaseClient.auth.getSession().then(async({data,error})=>{
   if(error){accountFeedback(error.message);return}
   const user=data.session?.user;
-  if(user){showAccount(user);currentUserId=user.id;await saveProfile(user);await acceptPendingInvite(user);await loadSharedConversation(user)}
+  if(user){showAccount(user);currentUserId=user.id;showColorOnboarding(user);await saveProfile(user);await acceptPendingInvite(user);await loadSharedConversation(user)}
   else if(pendingInviteToken){accountFeedback('You have a BIT invitation. Create an account or sign in with the email address it was sent to, then BIT will connect you both.')}
  });
- supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){acceptPendingInvite(session.user);loadSharedConversation(session.user)}else{activePartnership=null;messages=[];renderMessages()}});
+ supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){showColorOnboarding(session.user);acceptPendingInvite(session.user);loadSharedConversation(session.user)}else{activePartnership=null;messages=[];renderMessages()}});
 }
 
 const prompts=["Before you respond, get curious: what do you want your person to understand—not just hear?","Can you name the feeling without turning it into a verdict about your person?","What is one specific request that would help you feel understood?","What do you know for sure, and what are you filling in because you feel hurt or uncertain?","What would listening look like if neither of you had to lose for the other to be heard?"];
