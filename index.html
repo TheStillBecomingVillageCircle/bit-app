@@ -309,6 +309,8 @@ $('labStart').addEventListener('click',()=>{
  $('labGameArea').classList.add('hidden');$('labRecipeArea').classList.add('hidden');$('labQuestionArea').classList.remove('hidden');
  $('labQuestionArea').innerHTML='<div class="notice good"><strong>Experiment started!</strong><br>'+labParticipants.length+' individual colors are in the lab. Take turns answering and learning—nobody has to agree on everything.</div><h3 id="labQTitle"></h3><p id="labQHint" class="muted small"></p><div id="labOptions" class="featurelist"></div><button class="btn" id="labNext" style="margin-top:14px">Add ingredient</button>';
  drawLabQuestion();
+ $('labQuestionArea').scrollIntoView({behavior:'smooth',block:'start'});
+ toast('Experiment started! Your first question is ready.');
 });
 function drawLabQuestion(){
  const q=labQuestions[labQ%labQuestions.length];$('labQTitle').textContent='Question '+(labQ+1)+': '+q.q;$('labQHint').textContent='Choose the answer you think best supports understanding.';
