@@ -132,7 +132,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <div class="cardhead"><div class="glyph">🧪</div><h3>Your shared recipe begins here</h3></div>
    <p>Your invitation and your game are connected. Once the other participant joins, they choose their own liquid color. Then you can answer questions, learn about each other, and combine your colors into one shared recipe.</p>
    <div id="invitePreview" class="invitecode">Your invitation will appear here.</div>
-   <div class="actions" style="margin-top:12px"><a class="btn" id="sendInvite" href="#" role="button">Open email draft</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div><p class="small muted">BIT creates a secure invitation. Open email draft if your device has an email app configured, or copy the invitation to paste into any message. BIT does not send the email automatically.</p>
+   <div class="actions" style="margin-top:12px"><a class="btn" id="sendInvite" href="#" role="button">Email invitation</a><a class="btn secondary" id="textInvite" href="#" role="button">Text invitation</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div><p class="small muted">Prepare an invitation, then choose Email, Text, or Copy. Email and Text open your phone’s app with the invitation ready; tap Send there. No sharing popup.</p>
    <div class="divider" style="height:1px;background:var(--line);margin:20px 0"></div>
    <div class="eyebrow">Step 2 · When they join</div>
    <div class="vialstage" id="invitePairStage">
@@ -414,7 +414,8 @@ $('makeInvite').addEventListener('click',async()=>{
   const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';
   invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found BIT — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\nTap this personal invitation link to join our shared BIT space: '+invitationLink+'\n\n“Better Communication. Brighter Tomorrows.”';
   $('invitePreview').textContent=invitation;
-  $('sendInvite').href='mailto:'+encodeURIComponent(contact)+'?subject='+encodeURIComponent('Your invitation to BIT — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
+  $('sendInvite').href='mailto:'+contact+'?subject='+encodeURIComponent('Your invitation to BIT — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
+  $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
   if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
   if($('inviteOtherName'))$('inviteOtherName').textContent=name;
   $('inviteLiquid').style.height='100%';$('inviteProgress').style.width='100%';
@@ -439,9 +440,19 @@ $('copyInvite').addEventListener('click',async()=>{
   toast(copied?'Invitation copied. Paste it into your message.':'Select and copy the invitation shown above.');
  }
 });
+function ensurePreparedInvite(e){
+ if(invitation&&invitationLink)return true;
+ e.preventDefault();toast('Prepare your invitation first.');
+ $('makeInvite').scrollIntoView({behavior:'smooth',block:'center'});
+ return false;
+}
 $('sendInvite').addEventListener('click',e=>{
- if(!invitation||!invitationLink){e.preventDefault();toast('Prepare your invitation first.');return}
- $('inviteVialStatus').textContent='If no email draft opens, your device may not have an email app configured. Copy the invitation instead.';
+ if(!ensurePreparedInvite(e))return;
+ $('inviteVialStatus').textContent='Email draft opening. Review and tap Send in your email app.';
+});
+$('textInvite').addEventListener('click',e=>{
+ if(!ensurePreparedInvite(e))return;
+ $('inviteVialStatus').textContent='Text draft opening. Review and tap Send in your messaging app.';
 });
 
 $('checkinBtn').addEventListener('click',()=>{const result=$('checkinResult');result.classList.remove('hidden');result.textContent='Check-in prompt: “What has felt good between us lately, what has felt hard, and what is one small thing we can do this week to feel more connected?” Topic: '+$('checkin').value});
