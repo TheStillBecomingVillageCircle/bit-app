@@ -41,7 +41,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .personcolor{padding:12px;border:1px solid var(--line);border-radius:14px;background:#0a3037}
 .personcolor label{display:block;font-size:12px;color:var(--muted);margin-bottom:8px}
 
-</style>
+.joinNotice{text-align:center;border:1px solid var(--gold);margin-bottom:18px}.joinStage{display:flex;justify-content:center;align-items:center;gap:18px;height:160px;--a:#39d9d0;--b:#e8c77b}.joinTube{height:100px;width:48px;border:3px solid #b6e7df;border-top:0;border-radius:9px 9px 20px 20px;position:relative;overflow:hidden;animation:tiltTube 2s forwards}.joinTube:last-child{animation-name:tiltOther}.joinTube span{position:absolute;bottom:0;left:0;right:0;height:75%;background:var(--a)}.joinTube:last-child span{background:var(--b)}.joinHeart{font-size:76px;background:linear-gradient(120deg,var(--a) 50%,var(--b) 50%);background-clip:text;-webkit-background-clip:text;color:transparent;opacity:0;animation:heartAppear 1s 1.6s forwards;filter:drop-shadow(0 0 12px #b6e7df88)}@keyframes tiltTube{to{transform:rotate(42deg)}}@keyframes tiltOther{to{transform:rotate(-42deg)}}@keyframes heartAppear{to{opacity:1}}@media(prefers-reduced-motion:reduce){.joinTube,.joinHeart{animation:none}.joinHeart{opacity:1}}</style>
 </head>
 <body>
 <div class="shell">
@@ -64,7 +64,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <button class="active" data-view="home" title="Home"><span class="navicon" aria-hidden="true">⌂</span><span class="navlabel">Home</span></button><button data-view="lab" title="Private reflection"><span class="navicon" aria-hidden="true">✧</span><span class="navlabel">Reflect</span></button><button data-view="messages" title="Messages"><span class="navicon" aria-hidden="true">♡</span><span class="navlabel">Messages</span></button><button data-view="invite" title="Together: invite and build your recipe"><span class="navicon" aria-hidden="true">＋</span><span class="navlabel">Together</span></button><button data-view="tools" title="Relationship tools"><span class="navicon" aria-hidden="true">✦</span><span class="navlabel">Tools</span></button>
 </nav>
 <main>
-<section id="home" class="view active">
+<section id="home" class="view active"><section id="joinNotice" class="card joinNotice hidden" role="status"><h2 id="joinTitle">Your person has joined!</h2><p>Two colors, one shared experiment. Your connection is ready to explore.</p><div class="joinStage" id="joinStage"><div class="joinTube"><span></span></div><div class="joinHeart">♥</div><div class="joinTube"><span></span></div></div><p>Let's discover what helps you understand each other better.</p><button class="btn" id="joinContinue">Explore our connection</button></section>
  <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn" id="startTogetherBtn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
  <section class="card" aria-labelledby="dailyIntentionTitle" style="margin:0 0 18px"><h3 id="dailyIntentionTitle" style="color:var(--mint);margin:0">✦ Today's intention</h3><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious: what do you want your person to understand—not just hear?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></section>
  <div class="grid" style="margin-bottom:18px"><article class="card span12"><div class="cardhead"><div class="glyph">🌱</div><h3>How BIT works</h3></div><div class="featurelist"><div class="feature"><span class="check">01</span><span><strong>Both people matter.</strong> The same care and standards apply to each participant.</span></div><div class="feature"><span class="check">02</span><span><strong>Feelings are allowed.</strong> Honest communication does not require forced positivity.</span></div><div class="feature"><span class="check">03</span><span><strong>Private means private.</strong> Raw reflections are never shared automatically.</span></div><div class="feature"><span class="check">04</span><span><strong>Consent comes first.</strong> Each participant chooses whether to join and what to share.</span></div></div></article></div>
@@ -274,7 +274,7 @@ if(supabaseClient){
 }
 
 const prompts=["Before you respond, get curious: what do you want your person to understand—not just hear?","Can you name the feeling without turning it into a verdict about your person?","What is one specific request that would help you feel understood?","What do you know for sure, and what are you filling in because you feel hurt or uncertain?","What would listening look like if neither of you had to lose for the other to be heard?"];
-let pIndex=0;let reflections=[];let messages=[];let activePartnership=null;let currentUserId=null;
+let pIndex=0;let reflections=[];let messages=[];let activePartnership=null;let currentUserId=null;let connectedPartnerName='';
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
 function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id || (id==='recipe'&&b.dataset.view==='invite')));window.scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.view)}));
@@ -372,6 +372,7 @@ async function loadSharedConversation(user){
  const {data:partnerships,error:pError}=await supabaseClient.from('partnerships').select('id,member_one,member_two,status,created_at').eq('status','active').or('member_one.eq.'+user.id+',member_two.eq.'+user.id).order('created_at',{ascending:false}).limit(1);
  if(pError){console.warn('Could not load BIT partnership:',pError.message);return}
  activePartnership=partnerships&&partnerships.length?partnerships[0]:null;
+ connectedPartnerName='';
  const startBtn=$('startTogetherBtn');if(startBtn){startBtn.textContent=activePartnership?'♡ Open our shared space':'🧪 Start our shared recipe';}
  if(!activePartnership){messages=[];renderMessages();return}
  const partnerId=activePartnership.member_one===user.id?activePartnership.member_two:activePartnership.member_one;
@@ -380,6 +381,7 @@ async function loadSharedConversation(user){
   if(!profileError&&partnerProfile?.display_name){
    const partnerName=partnerProfile.display_name.trim();
    if(partnerName){
+    connectedPartnerName=partnerName;
     $('labPartnerNames').value=partnerName;
     const vialNames=document.querySelectorAll('#vialStage .vialname');
     if(vialNames[1])vialNames[1].textContent=partnerName;
@@ -390,6 +392,7 @@ async function loadSharedConversation(user){
  const {data,error}=await supabaseClient.from('messages').select('id,sender_id,body,created_at').eq('partnership_id',activePartnership.id).order('created_at',{ascending:true}).limit(200);
  if(error){console.warn('Could not load BIT messages:',error.message);toast('Your shared space is connected, but messages could not load.');return}
  messages=data||[];renderMessages();
+ announceJoin();
 }
 function renderMessages(){
  const list=$('messageList');
@@ -490,6 +493,14 @@ const lawGuidance=[
  ['Individual Autonomy','What does each person need to decide freely, without pressure?']
 ];
 $('lawHelp').addEventListener('change',()=>{const i=Number($('lawHelp').value),result=$('lawHelpResult');if($('lawHelp').value===''){result.classList.add('hidden');return}result.classList.remove('hidden');result.textContent='Suggested starting point: The Law of '+lawGuidance[i][0]+'. '+lawGuidance[i][1]+' This is a conversation prompt, not a legal rule.'});
+
+function announceJoin(){if(!activePartnership||!currentUserId)return;const key='bit-seen-'+currentUserId+'-'+activePartnership.id;if(localStorage.getItem(key))return;const panel=$('joinNotice');$('joinTitle').textContent=(connectedPartnerName||'Your person')+' has joined!';$('joinStage').style.setProperty('--a',localStorage.getItem('bit-color-'+currentUserId)||'#39d9d0');panel.classList.remove('hidden');localStorage.setItem(key,'yes');go('home');}
+$('joinContinue').addEventListener('click',()=>{$('joinNotice').classList.add('hidden');go('messages')});
+$('inviteColor').addEventListener('change',()=>{if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
+let joinPolling=false;
+async function checkNewConnections(){if(joinPolling||!currentUserId||!supabaseClient||document.visibilityState==='hidden')return;joinPolling=true;try{const {data,error}=await supabaseClient.from('partnerships').select('id').eq('status','active').or('member_one.eq.'+currentUserId+',member_two.eq.'+currentUserId).limit(1);if(!error&&data?.length&&(!activePartnership||data[0].id!==activePartnership.id)){const {data:auth}=await supabaseClient.auth.getUser();if(auth?.user)await loadSharedConversation(auth.user)}}catch(e){console.warn(e)}finally{joinPolling=false}}
+setInterval(checkNewConnections,15000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkNewConnections()});
 
 })();
 </script>
