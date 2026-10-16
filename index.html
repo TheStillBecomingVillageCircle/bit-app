@@ -121,6 +121,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </section>
 <section id="invite" class="view">
  <h1 class="sectiontitle">Start Your Shared Recipe 🧪</h1>
+ <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch the two vials pour, meet in a cloud of color, and reveal a heart. You can replay this whenever you want.</p><button class="btn" id="togetherCeremony">💨 Watch the vial ceremony</button></div>
  <p class="sectionintro">Start your shared BIT experience here. Invite the person or people you want to build with, then continue into the Recipe Room—all in one connected space. Your vial begins filling as you add the invitation details. When they join, they choose their own color—and then you can begin your first experiment together.</p>
  <div class="grid">
   <div class="card span6">
@@ -507,6 +508,7 @@ const lawGuidance=[
 $('lawHelp').addEventListener('change',()=>{const i=Number($('lawHelp').value),result=$('lawHelpResult');if($('lawHelp').value===''){result.classList.add('hidden');return}result.classList.remove('hidden');result.textContent='Suggested starting point: The Law of '+lawGuidance[i][0]+'. '+lawGuidance[i][1]+' This is a conversation prompt, not a legal rule.'});
 
 function announceJoin(){if(!activePartnership||!currentUserId)return;const key='bit-seen-'+currentUserId+'-'+activePartnership.id;if(localStorage.getItem(key))return;const panel=$('joinNotice');$('joinTitle').textContent=(connectedPartnerName||'Your person')+' has joined!';$('joinStage').style.setProperty('--a',localStorage.getItem('bit-color-'+currentUserId)||'#39d9d0');panel.classList.remove('hidden');localStorage.setItem(key,'yes');go('home');}
+$('togetherCeremony').addEventListener('click',()=>{$('showJoinCeremony').click()});
 $('showJoinCeremony').addEventListener('click',()=>{$('joinTitle').textContent=activePartnership?(connectedPartnerName||'Your person')+' and you are connected!':'Preview the connection ceremony';$('joinNotice').classList.remove('hidden');go('home');replayCeremony()});
 function replayCeremony(){const stage=$('joinStage');const clone=stage.cloneNode(true);stage.replaceWith(clone);clone.scrollIntoView({behavior:'smooth',block:'center'});}
 $('replayJoin').addEventListener('click',replayCeremony);
