@@ -46,8 +46,8 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .joinNotice{text-align:center;border:1px solid var(--gold);margin-bottom:18px}
 .joinStage{--a:#39d9d0;--b:#e8c77b;position:relative;height:365px;max-width:440px;margin:14px auto;overflow:hidden;isolation:isolate}
 .ceremonyFlask{position:absolute;top:0;width:110px;height:154px;z-index:3;overflow:visible;filter:drop-shadow(0 6px 12px #0008) drop-shadow(0 0 9px #b6f7ef44)}
-.ceremonyFlask.left{left:0;transform-origin:60px 35px;animation:flaskPourLeft 5.5s ease-in-out both}
-.ceremonyFlask.right{right:0;transform-origin:60px 35px;animation:flaskPourRight 5.5s ease-in-out both}
+.ceremonyFlask.left{left:0;transform:none}
+.ceremonyFlask.right{right:0;transform:none}
 .flaskLiquid{transform-origin:center bottom;animation:flaskEmpty 2.2s 1.4s ease-in forwards}
 .heartBeaker{position:absolute;left:50%;top:132px;transform:translateX(-50%);width:224px;height:220px;z-index:3;filter:drop-shadow(0 10px 16px #0007) drop-shadow(0 0 12px #7afbe355)}
 .heartLiquidRise{transform:translateY(220px);animation:heartFill 3s 1.45s cubic-bezier(.2,.75,.4,1) forwards}
@@ -56,8 +56,8 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .heartBubbles circle:nth-child(2){animation-delay:2.9s}.heartBubbles circle:nth-child(3){animation-delay:3.3s}.heartBubbles circle:nth-child(4){animation-delay:3.7s}.heartBubbles circle:nth-child(5){animation-delay:4.1s}
 .chemistryConnectors{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}.connectorFlow{stroke-dasharray:100;stroke-dashoffset:100;animation:coilFill 2s 1s ease-in-out forwards}@media(prefers-reduced-motion:reduce){.connectorFlow{animation:none;stroke-dashoffset:0}}.spiralChamber{position:absolute;top:66px;width:76px;height:158px;z-index:4;overflow:visible;filter:drop-shadow(0 0 4px #ffffff33)}.spiralChamber.left{left:22%;transform:rotate(-25deg)}.spiralChamber.right{right:22%;transform:rotate(25deg)}.coilInner{stroke-dasharray:100;stroke-dashoffset:100;animation:coilFill 3s 1.15s ease-in-out forwards;filter:drop-shadow(0 0 3px currentColor)}@keyframes coilFill{0%{stroke-dashoffset:100}100%{stroke-dashoffset:0}}.joinSmoke{position:absolute;left:50%;top:160px;width:110px;height:110px;transform:translateX(-50%) scale(.1);border-radius:50%;opacity:0;z-index:6;background:radial-gradient(circle at 35% 50%,var(--a),transparent 60%),radial-gradient(circle at 65% 45%,var(--b),transparent 62%);filter:blur(14px);animation:ceremonySmoke 2.8s 3.2s ease-out forwards}
 .joinHeart{position:absolute;left:50%;top:188px;transform:translateX(-50%) scale(.1);font-size:74px;line-height:1;z-index:7;opacity:0;background:linear-gradient(135deg,var(--a) 0%,var(--a) 46%,var(--b) 54%,var(--b) 100%);background-clip:text;-webkit-background-clip:text;color:transparent;filter:drop-shadow(0 0 14px #b6e7df99);animation:ceremonyHeart 1.6s 5.2s forwards}
-@keyframes flaskPourLeft{0%,12%{transform:rotate(0)}30%,68%{transform:translateX(28px) rotate(52deg)}88%,100%{transform:rotate(0)}}
-@keyframes flaskPourRight{0%,12%{transform:rotate(0)}30%,68%{transform:translateX(-28px) rotate(-52deg)}88%,100%{transform:rotate(0)}}
+
+
 @keyframes flaskEmpty{to{transform:translateY(92px)}}
 @keyframes heartFill{to{transform:translateY(65px)}}
 
