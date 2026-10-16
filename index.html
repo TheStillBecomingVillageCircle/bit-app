@@ -44,16 +44,9 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 
 /* BIT chemistry ceremony — single maintained stylesheet */
 .joinNotice{text-align:center;border:1px solid var(--gold);margin-bottom:18px}
-.joinStage{--a:#39d9d0;--b:#e8c77b;position:relative;height:auto;aspect-ratio:440/390;max-width:440px;margin:14px auto;overflow:hidden;isolation:isolate}
-.chemistryVessel{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 10px 14px #0006) drop-shadow(0 0 10px #9df9ee44)}
-.chemistryPlume{transform-box:fill-box;transform-origin:center bottom;animation:chemistryBloom 7s ease-in-out infinite alternate}
-.chemistryPlumeB{animation-delay:-3.5s;animation-direction:alternate-reverse}
-.chemistryClouds{animation:chemistryDrift 12s ease-in-out infinite alternate}
-.chemistryGlow circle{fill:#eaffff;opacity:.45;animation:chemistrySparkle 3s ease-in-out infinite alternate}
-@keyframes chemistryBloom{0%{transform:translateY(35px) scale(.7,.78);opacity:.6}100%{transform:translateY(-14px) scale(1.13,1.05);opacity:.95}}
-@keyframes chemistryDrift{from{transform:translateX(-7px)}to{transform:translateX(7px)}}
-@keyframes chemistrySparkle{from{opacity:.15}to{opacity:.8}}
-@media(prefers-reduced-motion:reduce){.chemistryPlume,.chemistryClouds,.chemistryGlow circle{animation:none}.chemistryPlume{opacity:.9}}
+.joinStage{--a:#39d9d0;--b:#e8c77b;position:relative;aspect-ratio:440/390;width:100%;max-width:440px;margin:14px auto;overflow:hidden}
+.chemistryFluid,.chemistryGlass{position:absolute;inset:0;width:100%;height:100%;display:block}
+.chemistryGlass{pointer-events:none;filter:drop-shadow(0 5px 10px #0005)}
 </style>
 </head>
 <body>
@@ -80,26 +73,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <div id="signedInControls" class="hidden"><div class="notice good" id="signedInMessage">You're signed in.</div><button class="btn secondary" id="signOutBtn">Sign out</button></div>
  <div id="accountFeedback" class="notice hidden" role="status"></div>
 </section>
-<div id="colorOnboarding" class="card hidden" style="margin-top:14px;border-color:var(--gold)"><h3>🧪 Choose your signature color</h3><p>What color represents you in your BIT connections? Your color is yours to choose, and you can change it later.</p><div class="field"><label for="signaturePreset">Choose a color or combination</label><select id="signaturePreset"><option value="#39d9d0">Aqua</option><option value="#7df0d0">Mint green</option><option value="blend">Aqua + mint green</option><option value="#e8c77b">Gold</option><option value="#5168ca">Blue</option><option value="#9254c8">Purple</option><option value="#f39a65">Coral</option><option value="other">Other — describe my color</option></select></div><div class="field hidden" id="signatureCustomWrap"><label for="signatureCustom">Describe your color or blend</label><input id="signatureCustom" placeholder="e.g. seafoam and lavender, emerald green, sunset orange"></div><div class="field"><label for="signatureColor">Adjust your color</label><input type="color" id="signatureColor" value="#39d9d0"></div><div id="signaturePreview" style="height:46px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(125deg,#39d9d0,#7df0d0);margin:8px 0 14px"></div><button class="btn" id="saveSignatureColor">Continue with my color</button><p id="colorFeedback" class="small muted" role="status"></p></div><section id="joinNotice" class="card joinNotice hidden" role="status"><h2 id="joinTitle">Your chemistry recipe 🧪</h2><p id="joinDescription">Two colors, one shared journey. Discover what helps you understand each other.</p><div class="joinStage" id="joinStage"><svg class="chemistryVessel" viewBox="0 0 440 390" role="img" aria-label="Two colors bloom and intertwine in a rounded glass chemistry flask with two angled necks">
-<defs>
-<path id="vesselBody" d="M135 147 C112 165 86 205 86 254 C86 327 147 371 220 371 C293 371 354 327 354 254 C354 205 328 165 305 147 C287 135 280 120 287 103 L333 23 L359 37 L312 117 C309 125 321 138 340 162 C367 198 377 232 377 258 C377 347 307 388 220 388 C133 388 63 347 63 258 C63 232 73 198 100 162 C119 138 131 125 128 117 L81 37 L107 23 L153 103 C160 120 153 135 135 147 Z"/>
-<clipPath id="vesselInside"><use href="#vesselBody"/></clipPath>
-<filter id="softDye" x="-45%" y="-45%" width="190%" height="190%"><feTurbulence type="fractalNoise" baseFrequency=".012 .019" numOctaves="3" seed="5" result="n"><animate attributeName="baseFrequency" values=".012 .019;.018 .013;.012 .019" dur="13s" repeatCount="indefinite"/></feTurbulence><feDisplacementMap in="SourceGraphic" in2="n" scale="34"/><feGaussianBlur stdDeviation="9"/></filter>
-<radialGradient id="dyeA"><stop stop-color="var(--a)" stop-opacity=".9"/><stop offset=".56" stop-color="var(--a)" stop-opacity=".67"/><stop offset="1" stop-color="var(--a)" stop-opacity="0"/></radialGradient>
-<radialGradient id="dyeB"><stop stop-color="var(--b)" stop-opacity=".9"/><stop offset=".56" stop-color="var(--b)" stop-opacity=".67"/><stop offset="1" stop-color="var(--b)" stop-opacity="0"/></radialGradient>
-<linearGradient id="vesselShine" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f0ffff" stop-opacity=".23"/><stop offset=".45" stop-color="#ffffff" stop-opacity=".025"/><stop offset="1" stop-color="#a6efff" stop-opacity=".15"/></linearGradient>
-</defs>
-<use href="#vesselBody" fill="url(#vesselShine)"/>
-<g clip-path="url(#vesselInside)">
-<g filter="url(#softDye)">
-<g class="chemistryPlume chemistryPlumeA"><ellipse cx="156" cy="269" rx="99" ry="98" fill="url(#dyeA)"/><ellipse cx="203" cy="322" rx="100" ry="55" fill="url(#dyeA)"/><ellipse cx="156" cy="190" rx="42" ry="78" fill="url(#dyeA)"/><ellipse cx="125" cy="101" rx="19" ry="75" fill="url(#dyeA)"/><ellipse cx="231" cy="247" rx="45" ry="66" fill="url(#dyeA)"/></g>
-<g class="chemistryPlume chemistryPlumeB"><ellipse cx="284" cy="268" rx="99" ry="98" fill="url(#dyeB)"/><ellipse cx="239" cy="323" rx="100" ry="55" fill="url(#dyeB)"/><ellipse cx="284" cy="190" rx="42" ry="78" fill="url(#dyeB)"/><ellipse cx="315" cy="101" rx="19" ry="75" fill="url(#dyeB)"/><ellipse cx="210" cy="249" rx="45" ry="66" fill="url(#dyeB)"/></g>
-</g></g>
-<use href="#vesselBody" fill="none" stroke="#dcffff" stroke-width="5" stroke-linejoin="round"/>
-<ellipse cx="94" cy="29" rx="15" ry="7" transform="rotate(-28 94 29)" fill="#10383b" stroke="#dcffff" stroke-width="4"/>
-<ellipse cx="346" cy="29" rx="15" ry="7" transform="rotate(28 346 29)" fill="#10383b" stroke="#dcffff" stroke-width="4"/>
-<path d="M89 218 Q72 269 106 315 M337 217 Q368 267 334 315" fill="none" stroke="#fff" stroke-width="8" stroke-opacity=".37" stroke-linecap="round"/>
-</svg></div><p>Let's discover what helps you understand each other better.</p><div class="actions" style="justify-content:center"><button class="btn" id="joinContinue">Explore our chemistry ⚛️</button><button class="btn secondary" id="replayJoin">Replay our chemistry ⚛️</button></div></section>
+<div id="colorOnboarding" class="card hidden" style="margin-top:14px;border-color:var(--gold)"><h3>🧪 Choose your signature color</h3><p>What color represents you in your BIT connections? Your color is yours to choose, and you can change it later.</p><div class="field"><label for="signaturePreset">Choose a color or combination</label><select id="signaturePreset"><option value="#39d9d0">Aqua</option><option value="#7df0d0">Mint green</option><option value="blend">Aqua + mint green</option><option value="#e8c77b">Gold</option><option value="#5168ca">Blue</option><option value="#9254c8">Purple</option><option value="#f39a65">Coral</option><option value="other">Other — describe my color</option></select></div><div class="field hidden" id="signatureCustomWrap"><label for="signatureCustom">Describe your color or blend</label><input id="signatureCustom" placeholder="e.g. seafoam and lavender, emerald green, sunset orange"></div><div class="field"><label for="signatureColor">Adjust your color</label><input type="color" id="signatureColor" value="#39d9d0"></div><div id="signaturePreview" style="height:46px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(125deg,#39d9d0,#7df0d0);margin:8px 0 14px"></div><button class="btn" id="saveSignatureColor">Continue with my color</button><p id="colorFeedback" class="small muted" role="status"></p></div><section id="joinNotice" class="card joinNotice hidden" role="status"><h2 id="joinTitle">Your chemistry recipe 🧪</h2><p id="joinDescription">Two colors, one shared journey. Discover what helps you understand each other.</p><div class="joinStage" id="joinStage"><canvas class="chemistryFluid" width="440" height="390" aria-label="Animated aqua and gold dye blooming inside a glass vessel"></canvas><svg class="chemistryGlass" viewBox="0 0 440 390" aria-hidden="true"><defs><linearGradient id="glassSurface" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0ffff" stop-opacity=".19"/><stop offset=".55" stop-color="#dfffff" stop-opacity=".015"/><stop offset="1" stop-color="#b9ffff" stop-opacity=".14"/></linearGradient></defs><path d="M135 145 C86 160 65 207 65 261 C65 331 129 378 220 378 C311 378 375 331 375 261 C375 207 354 160 305 145" fill="url(#glassSurface)" stroke="#dfffff" stroke-width="5" stroke-linecap="round"/><path d="M135 145 C146 132 149 121 141 107 L94 29 M305 145 C294 132 291 121 299 107 L346 29" fill="none" stroke="#dfffff" stroke-width="25" stroke-linecap="round" opacity=".3"/><path d="M135 145 C146 132 149 121 141 107 L94 29 M305 145 C294 132 291 121 299 107 L346 29" fill="none" stroke="#dfffff" stroke-width="5" stroke-linecap="round"/><path d="M119 150 C127 134 129 122 120 110 L74 41 M321 150 C313 134 311 122 320 110 L366 41" fill="none" stroke="#dfffff" stroke-width="5" stroke-linecap="round"/><ellipse cx="84" cy="35" rx="15" ry="7" transform="rotate(-31 84 35)" fill="#10383b" stroke="#dfffff" stroke-width="4"/><ellipse cx="356" cy="35" rx="15" ry="7" transform="rotate(31 356 35)" fill="#10383b" stroke="#dfffff" stroke-width="4"/><path d="M86 226 Q75 284 118 327 M350 227 Q362 285 322 327" fill="none" stroke="#ffffff" stroke-opacity=".4" stroke-width="7" stroke-linecap="round"/></svg></div><p>Let's discover what helps you understand each other better.</p><div class="actions" style="justify-content:center"><button class="btn" id="joinContinue">Explore our chemistry ⚛️</button><button class="btn secondary" id="replayJoin">Replay our chemistry ⚛️</button></div></section>
  <div class="hero"><div class="eyebrow">Your connections, with intention</div><h1>Love is a feeling.<br><span>Connection takes practice.</span></h1><p>One step at a time. Choose what you need today; you do not have to do everything at once.</p><div class="actions"><button class="btn secondary" id="showJoinCeremony">🧪 Explore our chemistry recipe</button><button class="btn" id="startTogetherBtn" data-go="invite">🧪 Start our shared recipe</button><button class="btn secondary" data-go="messages">💬 Go to messages</button></div></div>
 
  <div class="grid" style="margin-bottom:18px"><article class="card span12"><div class="cardhead"><div class="glyph">🌱</div><h3>How BIT works</h3></div><div class="featurelist"><div class="feature"><span class="check">01</span><span><strong>Both people matter.</strong> The same care and standards apply to each participant.</span></div><div class="feature"><span class="check">02</span><span><strong>Feelings are allowed.</strong> Honest communication does not require forced positivity.</span></div><div class="feature"><span class="check">03</span><span><strong>Private means private.</strong> Raw reflections are never shared automatically.</span></div><div class="feature"><span class="check">04</span><span><strong>Consent comes first.</strong> Each participant chooses whether to join and what to share.</span></div></div></article></div>
@@ -541,7 +515,39 @@ $('lawHelp').addEventListener('change',()=>{const i=Number($('lawHelp').value),r
 function announceJoin(){if(!activePartnership||!currentUserId)return;const key='bit-seen-'+currentUserId+'-'+activePartnership.id;if(localStorage.getItem(key))return;const panel=$('joinNotice');$('joinTitle').textContent=(connectedPartnerName||'Your person')+' has joined!';$('joinStage').style.setProperty('--a',localStorage.getItem('bit-color-'+currentUserId)||'#39d9d0');$('joinDescription').textContent='Your invitation has been accepted! Your journey of intentional connection begins here. Let\'s discover what helps you understand each other, celebrate your individuality, and grow together without losing yourselves.';panel.classList.remove('hidden');localStorage.setItem(key,'yes');go('home');}
 $('togetherCeremony').addEventListener('click',()=>{$('showJoinCeremony').click()});
 $('showJoinCeremony').addEventListener('click',()=>{$('joinTitle').textContent=activePartnership?'Explore our chemistry recipe 🧪':'Preview our chemistry recipe 🧪';$('joinDescription').textContent='Two colors, one shared journey. Discover what helps you understand each other.';$('joinNotice').classList.remove('hidden');go('home');replayCeremony()});
-function replayCeremony(){const stage=$('joinStage');const clone=stage.cloneNode(true);stage.replaceWith(clone);clone.scrollIntoView({behavior:'smooth',block:'center'});}
+function replayCeremony(){startChemistryFluid();$('joinStage').scrollIntoView({behavior:'smooth',block:'center'});}
+let chemistryFrame=0;
+function startChemistryFluid(){
+ const stage=$('joinStage'),canvas=stage.querySelector('canvas');if(!canvas)return;
+ cancelAnimationFrame(chemistryFrame);
+ const ctx=canvas.getContext('2d');if(!ctx)return;
+ const colorA=getComputedStyle(stage).getPropertyValue('--a').trim()||'#39d9d0',colorB=getComputedStyle(stage).getPropertyValue('--b').trim()||'#e8c77b';
+ const rgb=h=>{const x=/^#[0-9a-f]{6}$/i.test(h)?h:'#39d9d0';return [1,3,5].map(i=>parseInt(x.slice(i,i+2),16))};
+ const colors=[rgb(colorA),rgb(colorB)],reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const particles=[];
+ for(let side=0;side<2;side++)for(let i=0;i<115;i++){const k=i/115;particles.push({side,seed:i,age:k*210,x:(side?285:155)+(Math.sin(i*17.1)*28),y:165+k*135,rad:14+(i%9)*3,phase:i*2.399,drift:Math.sin(i*1.41)*.6})}
+ let tick=0;
+ function bulbPath(){ctx.beginPath();ctx.moveTo(135,145);ctx.bezierCurveTo(86,160,65,207,65,261);ctx.bezierCurveTo(65,331,129,378,220,378);ctx.bezierCurveTo(311,378,375,331,375,261);ctx.bezierCurveTo(375,207,354,160,305,145);ctx.quadraticCurveTo(220,185,135,145);ctx.closePath()}
+ function draw(){
+  tick++;ctx.clearRect(0,0,440,390);ctx.save();bulbPath();ctx.clip();
+  ctx.fillStyle='rgba(173,240,235,.035)';ctx.fillRect(60,145,320,240);
+  ctx.globalCompositeOperation='screen';
+  for(const p of particles){const side=p.side,progress=((tick*.65+p.age)%235)/235;
+   const x=(side?284:156)+Math.sin(p.phase+tick*.013)*((progress*49)+7)+(side?-1:1)*progress*27+p.drift*progress*35;
+   const y=157+progress*194+Math.sin(p.phase*1.7+tick*.01)*11;
+   const radius=p.rad*(.65+progress*1.4);
+   const c=colors[side],g=ctx.createRadialGradient(x,y,1,x,y,radius);
+   g.addColorStop(0,'rgba('+c.join(',')+',.12)');g.addColorStop(.38,'rgba('+c.join(',')+',.085)');g.addColorStop(1,'rgba('+c.join(',')+',0)');
+   ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,radius,0,Math.PI*2);ctx.fill();
+  }
+  ctx.restore();
+  // Colored dye streams enter through both angled glass necks.
+  for(let side=0;side<2;side++){const c=colors[side];const x=side?343:97;const end=side?294:146;const grad=ctx.createLinearGradient(x,48,end,163);grad.addColorStop(0,'rgba('+c.join(',')+',.02)');grad.addColorStop(1,'rgba('+c.join(',')+',.65)');ctx.beginPath();ctx.moveTo(x,48);ctx.lineTo(side?308:132,111);ctx.quadraticCurveTo(side?291:149,131,end,162);ctx.strokeStyle=grad;ctx.lineWidth=12;ctx.lineCap='round';ctx.stroke()}
+  if(!reduced&&document.contains(canvas))chemistryFrame=requestAnimationFrame(draw);
+ }
+ draw();
+}
+
 $('replayJoin').addEventListener('click',replayCeremony);
 $('joinContinue').addEventListener('click',()=>{$('joinNotice').classList.add('hidden');go('messages')});
 $('inviteColor').addEventListener('change',()=>{if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
