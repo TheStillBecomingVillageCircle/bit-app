@@ -57,6 +57,11 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 
 /* Fluid ribbons instead of dashed, glowing strokes */
 .pourArc path{stroke-dasharray:none!important;stroke-dashoffset:0!important;stroke-width:15;stroke-linecap:round;animation:liquidPulse .8s ease-in-out infinite alternate;filter:drop-shadow(0 1px 2px #ffffff55)}.pourArc{animation:arcVisible 2.9s 1.3s both;filter:none}.pourArcLeft{transform:rotate(-2deg)}.pourArcRight{transform:rotate(2deg)}@keyframes liquidPulse{from{stroke-width:12;opacity:.85}to{stroke-width:17;opacity:1}}@media(prefers-reduced-motion:reduce){.pourArc path{animation:none}}
+
+/* Fine flowing liquid: narrow irregular streams, moving highlights and droplets */
+.pourArc{filter:drop-shadow(0 0 3px #ffffff44)}.pourArc path{stroke-width:6!important;stroke-linecap:round;stroke-dasharray:none!important;animation:pourRipple .5s ease-in-out infinite alternate!important}.pourArcLeft{transform:rotate(-2deg)}.pourArcRight{transform:rotate(2deg)}
+.pourArc:after{content:'';position:absolute;bottom:10px;left:48%;width:7px;height:12px;border-radius:50%;background:var(--a);opacity:0;animation:fallDrop .8s 1.4s linear infinite}.pourArcRight:after{background:var(--b);animation-delay:1.7s}
+@keyframes pourRipple{from{stroke-width:5;opacity:.75}to{stroke-width:8;opacity:1}}@keyframes fallDrop{0%{opacity:0;transform:translateY(-18px) scale(.6)}30%{opacity:1}100%{opacity:0;transform:translateY(22px) scale(.9)}}
 </style>
 </head>
 <body>
