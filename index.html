@@ -89,7 +89,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </nav>
 <main>
 <section id="home" class="view active">
- <section class="card" aria-labelledby="dailyIntentionTitle" style="margin:0 0 18px"><h3 id="dailyIntentionTitle" style="color:var(--mint);margin:0">✦ Today's intention</h3><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious: what do you want your person to understand—not just hear?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></section>
+ <section class="card" aria-labelledby="dailyIntentionTitle" style="margin:0 0 18px"><h3 id="dailyIntentionTitle" style="color:var(--mint);margin:0">✦ Today's intention</h3><p id="dailyPrompt" style="margin-top:12px">Before you respond, get curious about your person's experience. What might they be feeling, and what could you ask to better understand?</p><button class="btn secondary" id="newPrompt">Give me another intention</button></section>
 <section class="card" id="accountPanel" style="margin-bottom:16px">
  <div class="cardhead"><div class="glyph">🔐</div><div><h3 style="margin:0">Your BIT account</h3><div id="accountStatus" class="small muted">Create an account or sign in to begin connecting BIT to your database.</div></div></div>
  <div id="accountForm">
@@ -318,7 +318,7 @@ if(supabaseClient){
  supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){showColorOnboarding(session.user);acceptPendingInvite(session.user);loadSharedConversation(session.user)}else{activePartnership=null;messages=[];renderMessages()}});
 }
 
-const prompts=["Before you respond, get curious: what do you want your person to understand—not just hear?","Can you name the feeling without turning it into a verdict about your person?","What is one specific request that would help you feel understood?","What do you know for sure, and what are you filling in because you feel hurt or uncertain?","What would listening look like if neither of you had to lose for the other to be heard?"];
+const prompts=["Before you respond, get curious about your person's experience. What might they be feeling, and what could you ask to better understand?","Can you share how you feel without assuming you know your person’s intentions?","What is one thing you could ask your person to better understand their experience?","What have you heard your person actually say, and what might you still need to ask?","Today, can you listen to understand your person’s words and emotions before forming a conclusion?"];
 let pIndex=0;let reflections=[];let messages=[];let activePartnership=null;let currentUserId=null;let connectedPartnerName='';
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
 function go(id){$('bitMenu').classList.add('hidden');$('bitMenuToggle').setAttribute('aria-expanded','false');document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id || (id==='recipe'&&b.dataset.view==='invite')));window.scrollTo({top:0,behavior:'smooth'})}
