@@ -682,10 +682,10 @@ $('bitRequestHelp').addEventListener('click',()=>{const pair=bitLawPairs[bitStep
 const careBox=$('careEnvelope'),careLetter=$('careLetter'),careButton=$('careOpen');
 let careDismissedDraft='';
 const careSignals=[
- /\\b(?:i(?:'m| am) (?:afraid|scared) (?:of|to)|i (?:feel|don't feel) (?:unsafe|safe)|afraid (?:of|to) (?:say no|leave|disagree))\\b/i,
- /\\b(?:i(?:'ll| will) (?:hurt|kill|hit) you|(?:hurt|kill|hit) you if|(?:threatened|threatening) (?:to )?(?:hurt|kill|hit))\\b/i,
- /\\b(?:won't let me leave|not allowed to leave|locked me in|blocked (?:the|my) (?:door|exit)|forced me to (?:have sex|do sexual)|sex without (?:my )?consent)\\b/i,
- /\\b(?:tracking my location|stalking me|watching my every move|checking my phone without permission|threatened to share (?:my )?(?:photos|pictures))\\b/i
+ /\b(?:i(?:'m| am) (?:afraid|scared) (?:of|to)|i (?:feel|don't feel) (?:unsafe|safe)|afraid (?:of|to) (?:say no|leave|disagree))\b/i,
+ /\b(?:i(?:'ll| will) (?:hurt|kill|hit) you|(?:hurt|kill|hit) you if|(?:threatened|threatening) (?:to )?(?:hurt|kill|hit))\b/i,
+ /\b(?:won't let me leave|not allowed to leave|locked me in|blocked (?:the|my) (?:door|exit)|forced me to (?:have sex|do sexual)|sex without (?:my )?consent)\b/i,
+ /\b(?:tracking my location|stalking me|watching my every move|checking my phone without permission|threatened to share (?:my )?(?:photos|pictures))\b/i
 ];
 function careUpdate(){
  const draft=$('messageDraft').value;
