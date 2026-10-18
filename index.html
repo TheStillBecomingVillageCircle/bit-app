@@ -446,7 +446,7 @@ function refreshInviteColor(){
  $('inviteLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
  if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
 }
-$('inviteColor').addEventListener('input',refreshInviteColor);
+$('inviteColor').addEventListener('input',()=>{refreshInviteColor();careUpdate()});
 $('inviteColor').addEventListener('change',()=>{refreshInviteColor();if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
 window.addEventListener('pageshow',refreshInviteColor);
 refreshInviteColor();
@@ -722,7 +722,7 @@ function careUpdate(){
  careBox.style.setProperty('--care-color',color);
 }
 $('messageDraft').addEventListener('input',careUpdate);
-$('inviteColor').addEventListener('input',careUpdate);
+
 careButton.addEventListener('click',()=>{const opening=careLetter.classList.contains('hidden');careLetter.classList.toggle('hidden',!opening);careButton.setAttribute('aria-expanded',String(opening))});
 $('careClose').addEventListener('click',()=>{careLetter.classList.add('hidden');careButton.setAttribute('aria-expanded','false')});
 $('careDismiss').addEventListener('click',()=>{careDismissedDraft=$('messageDraft').value;careBox.classList.add('hidden');careLetter.classList.add('hidden')});
