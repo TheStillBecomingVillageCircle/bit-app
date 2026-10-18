@@ -139,9 +139,9 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <div class="colorfield"><label for="inviteColor" style="margin:0">Choose your liquid color</label><input id="inviteColor" type="color" value="#39d9d0" aria-label="Choose your vial liquid color"><span id="inviteColorName">Aqua</span></div>
    <div class="field"><label for="partnerName">What should we call your person or group?</label><input id="partnerName" placeholder="e.g. my favorite human"></div>
    <div class="field"><label for="inviteContact">Their email address</label><input id="inviteContact" type="email" placeholder="name@example.com" autocomplete="email" required></div>
-   <div class="field"><label for="inviteNote">Add a personal note</label><textarea id="inviteNote" placeholder="I'd love for us to try a new way of hearing each other…"></textarea></div>
-   <button class="btn gold" id="makeInvite">Prepare invitation</button>
-   <div class="notice">You will review the invitation in your email or messaging app before sending.</div>
+   <div class="field"><label for="inviteNote">Add your own words (optional)</label><textarea id="inviteNote" placeholder="Leave this blank and B. I. T. will write a warm invitation for you."></textarea></div>
+   <button class="btn gold" id="makeInvite">💌 Create my invitation</button>
+   <div class="notice">B. I. T. writes the invitation for you. You can review it before choosing to send.</div>
   </div>
   <div class="card span6">
    <div class="cardhead"><div class="glyph">🧪</div><h3>Your shared recipe begins here</h3></div>
@@ -492,8 +492,9 @@ $('makeInvite').addEventListener('click',async()=>{
   const {error:inviteError}=await supabaseClient.from('partnership_invites').insert({partnership_id:partnership.id,inviter_id:user.id,invitee_email:contact,token_hash:tokenHash});
   if(inviteError)throw inviteError;
   invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?invite='+token;
-  const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';
-  invitation='Hey '+name+' 💛\n\n'+(note.trim().toLowerCase()==='hi'?'':note+'\n\n')+'\n\nI found B. I. T. — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\nTap this personal invitation link to join our shared B. I. T. space: '+invitationLink+'\n\n“Better Communication. Brighter Tomorrows.”';
+  const note=$('inviteNote').value.trim();
+  const personalWords=note ? '\n\n'+note : '';
+  invitation='Hey '+name+' 💛\n\nI came across something I would love for us to experience together. It is called B. I. T. — Becoming Intentional Together. 💚\n\nIt is a little space where we can laugh, learn more about each other, listen with care, and make room for the kind of connection we both deserve. No pressure, no need to have all the answers. Just two people choosing to keep becoming, intentionally, together. 🧪✨'+personalWords+'\n\nIf you are open to it, I would love for you to join me. Here is your personal invitation:\n'+invitationLink+'\n\nBetter Communication. Brighter Tomorrows. 💛';
   $('invitePreview').textContent=invitation;
   $('sendInvite').href='mailto:'+contact+'?subject='+encodeURIComponent('Your invitation to B. I. T. — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
   $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
