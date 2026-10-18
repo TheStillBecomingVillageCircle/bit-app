@@ -448,6 +448,9 @@ function refreshInviteColor(){
 }
 $('inviteColor').addEventListener('input',refreshInviteColor);
 $('inviteColor').addEventListener('change',refreshInviteColor);
+window.addEventListener('pageshow',()=>{refreshInviteColor();requestAnimationFrame(refreshInviteColor)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshInviteColor()});
+document.querySelectorAll('[data-view="invite"]').forEach(button=>button.addEventListener('click',()=>requestAnimationFrame(refreshInviteColor)));
 refreshInviteColor();
 function updateInviteVial(){
  const name=$('partnerName').value.trim(),contact=$('inviteContact').value.trim();
