@@ -432,7 +432,7 @@ $('labPeople').addEventListener('change',()=>{const count=Number($('labPeople').
 drawLabColorPickers();
 function refreshInviteColor(){
  const color=$('inviteColor').value.toLowerCase();
- const names={'#39d9d0':'Aqua','#7df0d0':'Mint','#00ffff':'Cyan','#ff0000':'Red','#ff69b4':'Pink','#800080':'Purple','#a020f0':'Purple','#ff0000':'Red','#0000ff':'Blue','#008000':'Green','#ffff00':'Yellow','#ffa500':'Orange','#ffffff':'White','#000000':'Black'};
+ const names={'#39d9d0':'Aqua','#7df0d0':'Mint','#00ffff':'Cyan','#ff0000':'Red','#ff69b4':'Pink','#800080':'Purple','#a020f0':'Purple','#0000ff':'Blue','#008000':'Green','#ffff00':'Yellow','#ffa500':'Orange','#ffffff':'White','#000000':'Black'};
  let label=names[color];
  if(!label){
   const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255);
@@ -447,10 +447,8 @@ function refreshInviteColor(){
  if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
 }
 $('inviteColor').addEventListener('input',refreshInviteColor);
-$('inviteColor').addEventListener('change',refreshInviteColor);
-window.addEventListener('pageshow',()=>{refreshInviteColor();requestAnimationFrame(refreshInviteColor)});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshInviteColor()});
-document.querySelectorAll('[data-view="invite"]').forEach(button=>button.addEventListener('click',()=>requestAnimationFrame(refreshInviteColor)));
+$('inviteColor').addEventListener('change',()=>{refreshInviteColor();if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
+window.addEventListener('pageshow',refreshInviteColor);
 refreshInviteColor();
 function updateInviteVial(){
  const name=$('partnerName').value.trim(),contact=$('inviteContact').value.trim();
@@ -653,7 +651,7 @@ function startChemistryFluid(){
 
 $('replayJoin').addEventListener('click',replayCeremony);
 $('joinContinue').addEventListener('click',()=>{$('joinNotice').classList.add('hidden');go('messages')});
-$('inviteColor').addEventListener('change',()=>{if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
+
 let joinPolling=false;
 async function checkNewConnections(){if(joinPolling||!currentUserId||!supabaseClient||document.visibilityState==='hidden')return;joinPolling=true;try{const {data,error}=await supabaseClient.from('partnerships').select('id').eq('status','active').or('member_one.eq.'+currentUserId+',member_two.eq.'+currentUserId).limit(1);if(!error&&data?.length&&(!activePartnership||data[0].id!==activePartnership.id)){const {data:auth}=await supabaseClient.auth.getUser();if(auth?.user)await loadSharedConversation(auth.user)}}catch(e){console.warn(e)}finally{joinPolling=false}}
 setInterval(checkNewConnections,15000);
