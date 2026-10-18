@@ -189,7 +189,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <button class="btn secondary" id="openRecipeGame">🧪 Preview the shared game</button>
   </div></details>
  </div>
- <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">🧪 Our Recipe Room</summary><div style="margin-top:16px"> <div class="card labintro">
+ <details id="recipeRoomDetails" class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">🧪 Our Recipe Room</summary><div style="margin-top:16px"> <div class="card labintro">
   <div class="eyebrow">A shared experience · Any relationship structure</div>
   <h2 style="margin:0">The Recipe Room 🧪</h2>
   <p>Choose your own color, answer questions, and discover what you understand about one another. Each person keeps their own vial. When everyone is ready, the colors can come together to create a shared recipe.</p>
@@ -216,19 +216,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </div></details>
  <details class="card" style="margin:14px 0"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">💚 Our Chemistry</summary><div style="margin-top:14px"> <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch two signature colors meet and intertwine while staying beautifully distinct. You can replay your chemistry whenever you want.</p><button class="btn" id="togetherCeremony">💨 Explore our chemistry ⚛️</button></div>
 </div></details>
-<div style="margin-top:14px"><div id="sharedGameArea" class="hidden">
- <h2 class="sectiontitle">Now, let’s play together 🧪</h2><p class="sectionintro">The person you invited is the person you explore with. Choose participant colors, answer questions, and see what you discover together. This is a local demo until real accounts and invitations are connected.</p>
- <div class="card labintro" style="margin-top:16px">
-  <div class="eyebrow">Your people · Your colors · Your recipe</div>
-  <div class="field"><label for="labGroupName">Name your shared recipe</label><input id="labGroupName" placeholder="e.g. Understanding"></div>
-  <div class="grid" style="margin-top:0"><div class="field span6"><label for="labPeople">How many people are participating?</label><select id="labPeople"><option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="5">5 people</option><option value="6">6 people</option></select></div><div class="field span6"><label for="labType">What kind of connection?</label><select id="labType"><option>Romantic relationship</option><option>Polyamorous relationship</option><option>Family</option><option>Friendship</option><option>Chosen family</option><option>Other meaningful relationship</option></select></div></div>
-  <div class="vialstage" id="vialStage"><div class="vialperson"><div class="vial"><div class="liquid" id="liquid0"></div></div><div class="vialname">You</div><div class="vialstatus">Ready to begin</div></div><div class="vialperson"><div class="vial"><div class="liquid" id="liquid1"></div></div><div class="vialname">Your person</div><div class="vialstatus">Their color awaits</div></div></div>
-  <div class="labprogress"><span id="labProgressFill"></span></div>
-  <div id="labGameArea"><div class="field"><label for="labSelfName">Your name or nickname</label><input id="labSelfName" placeholder="Your name"></div><div class="field"><label for="labPartnerNames">Other participants' names or nicknames</label><input id="labPartnerNames" placeholder="Separate names with commas"></div><div id="labColorPickers" class="personcolors"></div><button class="btn gold" id="labStart">Start our first experiment</button></div>
-  <div id="labQuestionArea" class="hidden"></div><div id="labRecipeArea" class="hidden"></div>
-  <p class="small muted" style="margin:0">Demo only: the invite and game do not yet share data across accounts. Real invitation acceptance and synchronized vials are a later backend step.</p>
- </div>
-</div></div></section>
+</section>
 
 <section id="tools" class="view">
  <h1 class="sectiontitle">Relationship tools</h1><p class="sectionintro">Small shared practices can make room for better conversations. These tools are demonstrations; shared syncing is not connected yet.</p>
@@ -360,8 +348,8 @@ let pIndex=0;let reflections=[];let messages=[];let activePartnership=null;let c
 function toast(t){const el=$('toast');el.textContent=t;el.classList.remove('hidden');clearTimeout(window.__bitToast);window.__bitToast=setTimeout(()=>el.classList.add('hidden'),2400)}
 function go(id){$('bitMenu').classList.add('hidden');$('bitMenuToggle').setAttribute('aria-expanded','false');document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id || (id==='recipe'&&b.dataset.view==='invite')));window.scrollTo({top:0,behavior:'smooth'})}
 $('bitMenuToggle').addEventListener('click',()=>{const opening=$('bitMenu').classList.contains('hidden');$('bitMenu').classList.toggle('hidden',!opening);$('bitMenuToggle').setAttribute('aria-expanded',String(opening));});
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{if(b.dataset.view==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.view)}));
-document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{if(b.id==='startTogetherBtn'&&activePartnership){go('messages');return}if(b.dataset.go==='invite')$('sharedGameArea').classList.add('hidden');go(b.dataset.go)}));
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{go(b.dataset.view)}));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{if(b.id==='startTogetherBtn'&&activePartnership){go('messages');return}go(b.dataset.go)}));
 $('newPrompt').addEventListener('click',()=>{pIndex=(pIndex+1)%prompts.length;$('dailyPrompt').textContent=prompts[pIndex]});
 
 const labQuestions=[
@@ -563,7 +551,7 @@ $('makeInvite').addEventListener('click',async()=>{
  }catch(e){console.error('B. I. T. invitation creation failed:',e);toast(e.message||'Could not create the invitation.')}
  finally{button.disabled=false;button.textContent='💌 Create my invitation'}
 });
-$('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
+$('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('recipeRoomDetails').open=true;$('recipeRoomDetails').scrollIntoView({behavior:'smooth',block:'start'});});
 $('copyInvite').addEventListener('click',async()=>{
  if(!invitation||!invitationLink){toast('Prepare your invitation first.');return}
  try{
