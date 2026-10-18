@@ -285,8 +285,8 @@ function updateSignaturePreview(){const choice=$('signaturePreset').value,custom
 $('signaturePreset').addEventListener('change',updateSignaturePreview);
 $('signatureCustom').addEventListener('input',updateSignaturePreview);
 $('signatureColor').addEventListener('input',()=>{$('signaturePreset').value='other';updateSignaturePreview()});
-function showColorOnboarding(user){if(!user)return;const key='bit-color-'+user.id;const existing=localStorage.getItem(key);$('colorOnboarding').classList.toggle('hidden',!!existing);if(existing){const hex=/^#[0-9a-f]{6}$/i.test(existing)?existing:'#39d9d0';$('signatureColor').value=hex;$('inviteColor').value=hex;}updateSignaturePreview();}
-$('saveSignatureColor').addEventListener('click',()=>{if(!currentUserId)return;const choice=$('signaturePreset').value,description=$('signatureCustom').value.trim();if(choice==='other'&&!description){$('colorFeedback').textContent='Describe your color or combination first.';return}const color=choice==='blend'?'#39d9d0':$('signatureColor').value;localStorage.setItem('bit-color-'+currentUserId,color);localStorage.setItem('bit-color-style-'+currentUserId,choice==='blend'?'linear-gradient(125deg,#39d9d0,#7df0d0)':color);localStorage.setItem('bit-color-label-'+currentUserId,choice==='blend'?'Aqua + mint green':choice==='other'?description:$('signaturePreset').selectedOptions[0].textContent);$('inviteColor').value=color;$('colorOnboarding').classList.add('hidden');toast('Your signature color is ready!');});
+function showColorOnboarding(user){if(!user)return;const key='bit-color-'+user.id;const existing=localStorage.getItem(key);$('colorOnboarding').classList.toggle('hidden',!!existing);if(existing){const hex=/^#[0-9a-f]{6}$/i.test(existing)?existing:'#39d9d0';$('signatureColor').value=hex;$('inviteColor').value=hex;refreshInviteColor();}updateSignaturePreview();}
+$('saveSignatureColor').addEventListener('click',()=>{if(!currentUserId)return;const choice=$('signaturePreset').value,description=$('signatureCustom').value.trim();if(choice==='other'&&!description){$('colorFeedback').textContent='Describe your color or combination first.';return}const color=choice==='blend'?'#39d9d0':$('signatureColor').value;localStorage.setItem('bit-color-'+currentUserId,color);localStorage.setItem('bit-color-style-'+currentUserId,choice==='blend'?'linear-gradient(125deg,#39d9d0,#7df0d0)':color);localStorage.setItem('bit-color-label-'+currentUserId,choice==='blend'?'Aqua + mint green':choice==='other'?description:$('signaturePreset').selectedOptions[0].textContent);$('inviteColor').value=color;refreshInviteColor();$('colorOnboarding').classList.add('hidden');toast('Your signature color is ready!');});
 async function saveProfile(user, displayName){
  if(!supabaseClient||!user)return;
  const payload={id:user.id,display_name:displayName||user.user_metadata?.display_name||user.email||''};
@@ -430,10 +430,25 @@ $('labSelfName').addEventListener('input',drawLabColorPickers);
 $('labPartnerNames').addEventListener('input',drawLabColorPickers);
 $('labPeople').addEventListener('change',()=>{const count=Number($('labPeople').value);drawLabColorPickers();renderVials(count,[],[]);});
 drawLabColorPickers();
-$('inviteColor').addEventListener('input',()=>{
- const color=$('inviteColor').value;$('inviteLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
- $('inviteColorName').textContent=color.toUpperCase();
-});
+function refreshInviteColor(){
+ const color=$('inviteColor').value.toLowerCase();
+ const names={'#39d9d0':'Aqua','#7df0d0':'Mint','#00ffff':'Cyan','#ff0000':'Red','#ff69b4':'Pink','#800080':'Purple','#a020f0':'Purple','#ff0000':'Red','#0000ff':'Blue','#008000':'Green','#ffff00':'Yellow','#ffa500':'Orange','#ffffff':'White','#000000':'Black'};
+ let label=names[color];
+ if(!label){
+  const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16)/255);
+  const max=Math.max(...rgb),min=Math.min(...rgb),delta=max-min;
+  let hue=0;
+  if(delta){if(max===rgb[0])hue=((rgb[1]-rgb[2])/delta)%6;else if(max===rgb[1])hue=(rgb[2]-rgb[0])/delta+2;else hue=(rgb[0]-rgb[1])/delta+4;hue=(hue*60+360)%360;}
+  const saturation=max===0?0:delta/max;
+  label=max<.18?'Black':saturation<.13?(max>.85?'White':'Gray'):hue<15||hue>=345?'Red':hue<42?'Orange':hue<65?'Yellow':hue<165?'Green':hue<195?'Aqua':hue<250?'Blue':hue<290?'Purple':hue<345?'Pink':'Red';
+ }
+ $('inviteColorName').textContent=label;
+ $('inviteLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
+ if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
+}
+$('inviteColor').addEventListener('input',refreshInviteColor);
+$('inviteColor').addEventListener('change',refreshInviteColor);
+refreshInviteColor();
 function updateInviteVial(){
  const name=$('partnerName').value.trim(),contact=$('inviteContact').value.trim();
  const level=(name?45:0)+(contact?40:0);
