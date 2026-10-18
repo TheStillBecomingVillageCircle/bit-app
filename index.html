@@ -131,7 +131,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 </section>
 <section id="invite" class="view">
  <h1 class="sectiontitle">Connect with your person 💚</h1>
- <p class="sectionintro">Start your shared B. I. T. experience here. Invite the person or people you want to build with, then continue into the Recipe Room—all in one connected space. Your chemistry story begins when you invite someone to connect. When they join, they choose their own color—and then you can begin discovering what helps you grow together.</p>
+ <p class="sectionintro">Invite your person, explore your recipe, or enjoy your chemistry. One step at a time. 💚</p>
  <div class="grid">
   <div class="card span6">
    <div class="eyebrow">Step 1 · Your vial</div>
@@ -157,7 +157,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <button class="btn secondary" id="openRecipeGame">🧪 Preview the shared game</button>
   </div>
  </div>
- <div class="card labintro">
+ <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">🧪 Our Recipe Room</summary><div style="margin-top:16px"> <div class="card labintro">
   <div class="eyebrow">A shared experience · Any relationship structure</div>
   <h2 style="margin:0">The Recipe Room 🧪</h2>
   <p>Choose your own color, answer questions, and discover what you understand about one another. Each person keeps their own vial. When everyone is ready, the colors can come together to create a shared recipe.</p>
@@ -181,8 +181,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
   <div id="labRecipeArea" class="hidden"></div>
   <p class="small muted" style="margin:0">Prototype experience: vial progress is a playful demo in this browser. It does not send invitations, create accounts, or sync participants yet.</p>
 </div>
- <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch two signature colors meet and intertwine while staying beautifully distinct. You can replay your chemistry whenever you want.</p><button class="btn" id="togetherCeremony">💨 Explore our chemistry ⚛️</button></div>
-<div id="sharedGameArea" class="hidden">
+</div></details>
+ <details class="card" style="margin:14px 0"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">💚 Our Chemistry</summary><div style="margin-top:14px"> <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch two signature colors meet and intertwine while staying beautifully distinct. You can replay your chemistry whenever you want.</p><button class="btn" id="togetherCeremony">💨 Explore our chemistry ⚛️</button></div>
+</div></details>
+<div style="margin-top:14px"><div id="sharedGameArea" class="hidden">
  <h2 class="sectiontitle">Now, let’s play together 🧪</h2><p class="sectionintro">The person you invited is the person you explore with. Choose participant colors, answer questions, and see what you discover together. This is a local demo until real accounts and invitations are connected.</p>
  <div class="card labintro" style="margin-top:16px">
   <div class="eyebrow">Your people · Your colors · Your recipe</div>
@@ -194,7 +196,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
   <div id="labQuestionArea" class="hidden"></div><div id="labRecipeArea" class="hidden"></div>
   <p class="small muted" style="margin:0">Demo only: the invite and game do not yet share data across accounts. Real invitation acceptance and synchronized vials are a later backend step.</p>
  </div>
-</div></section>
+</div></div></section>
 
 <section id="tools" class="view">
  <h1 class="sectiontitle">Relationship tools</h1><p class="sectionintro">Small shared practices can make room for better conversations. These tools are demonstrations; shared syncing is not connected yet.</p>
