@@ -170,15 +170,16 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <div class="colorfield"><label for="inviteColor" style="margin:0">Choose your liquid color</label><input id="inviteColor" type="color" value="#39d9d0" aria-label="Choose your vial liquid color"><span id="inviteColorName">Aqua</span></div>
    <div class="field"><label for="partnerName">What should we call your person or group?</label><input id="partnerName" placeholder="e.g. my favorite human"></div>
    <div class="field"><label for="inviteContact">Their email address</label><input id="inviteContact" type="email" placeholder="name@example.com" autocomplete="email" required></div>
-   <div class="field"><label for="inviteNote">Add your own words (optional)</label><textarea id="inviteNote" placeholder="Leave this blank and B. I. T. will write a warm invitation for you."></textarea></div>
+   <div class="field"><label for="inviteTone">💌 Invitation message style (optional)</label><select id="inviteTone"><option value="sweet">Sweet & loving 💛</option><option value="playful">Playful & fun 😂</option><option value="reconnect">Reconnecting 🌿</option><option value="thoughtful">Thoughtful & intentional ✨</option><option value="surprise">Surprise me ✨</option><option value="own">My own words</option></select></div>
+   <div class="field hidden" id="inviteOwnWrap"><label for="inviteNote">Your personal note (optional)</label><textarea id="inviteNote" rows="2" style="min-height:64px" placeholder="A little something from your heart…"></textarea></div>
    <button class="btn gold" id="makeInvite">💌 Create my invitation</button>
-   <div class="notice">B. I. T. writes the invitation for you. You can review it before choosing to send.</div>
+   <div id="inviteResult" class="hidden" style="margin-top:14px">
+    <div class="eyebrow">Your invitation is ready 💛</div>
+    <div id="invitePreview" class="invitecode" style="white-space:pre-wrap;max-height:260px;overflow:auto">Your invitation will appear here.</div>
+    <div class="actions" style="margin-top:12px"><a class="btn" id="sendInvite" href="#" role="button">Email invitation</a><a class="btn secondary" id="textInvite" href="#" role="button">Text invitation</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div>
+   </div>
   </div>
-  <div class="card span6">
-   <div class="cardhead"><div class="glyph">🧪</div><h3>Your shared recipe begins here</h3></div>
-   <p>Your invitation and your game are connected. Once the other participant joins, they choose their own liquid color. Then you can answer questions, learn about each other, and combine your colors into one shared recipe.</p>
-   <div id="invitePreview" class="invitecode">Your invitation will appear here.</div>
-   <div class="actions" style="margin-top:12px"><a class="btn" id="sendInvite" href="#" role="button">Email invitation</a><a class="btn secondary" id="textInvite" href="#" role="button">Text invitation</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div><p class="small muted">Prepare an invitation, then choose Email, Text, or Copy. Email and Text open your phone’s app with the invitation ready; tap Send there. No sharing popup.</p>
+  <details class="card span6" style="margin-top:0"><summary style="cursor:pointer;font-weight:750">🧪 When they join</summary><div style="padding-top:12px">
    <div class="divider" style="height:1px;background:var(--line);margin:20px 0"></div>
    <div class="eyebrow">Step 2 · When they join</div>
    <div class="vialstage" id="invitePairStage">
@@ -187,6 +188,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    </div>
    <button class="btn secondary" id="openRecipeGame">🧪 Preview the shared game</button>
   </div>
+  </div></details>
  </div>
  <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:800;font-size:1.15rem">🧪 Our Recipe Room</summary><div style="margin-top:16px"> <div class="card labintro">
   <div class="eyebrow">A shared experience · Any relationship structure</div>
@@ -506,6 +508,7 @@ function renderMessages(){
 }
 let invitation='';
 let invitationLink='';
+$('inviteTone').addEventListener('change',()=>{$('inviteOwnWrap').classList.toggle('hidden',$('inviteTone').value!=='own')});
 $('makeInvite').addEventListener('click',async()=>{
  const name=$('partnerName').value.trim()||'my person';
  const contact=$('inviteContact').value.trim().toLowerCase();
@@ -525,10 +528,15 @@ $('makeInvite').addEventListener('click',async()=>{
   const {error:inviteError}=await supabaseClient.from('partnership_invites').insert({partnership_id:partnership.id,inviter_id:user.id,invitee_email:contact,token_hash:tokenHash});
   if(inviteError)throw inviteError;
   invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?invite='+token;
-  const note=$('inviteNote').value.trim();
+  const tone=$('inviteTone').value;
+  const notes={sweet:'I would love for us to make more beautiful moments together, one conversation at a time. 💛',playful:'Look what I found! Something we can try together, laugh through, and learn a little more about each other. 😂',reconnect:'I miss the little moments when we really connect. I would love for us to make room for more of them. 🌿',thoughtful:'You matter to me, and I would love to keep discovering how we can understand and support each other better. ✨'};
+  const keys=Object.keys(notes);
+  const note=tone==='own'?$('inviteNote').value.trim():notes[tone==='surprise'?keys[Math.floor(Math.random()*keys.length)]:tone];
   const personalWords=note ? '\n\n'+note : '';
   invitation='Hey '+name+' 💛\n\nI came across something I would love for us to experience together. It is called B. I. T. — Becoming Intentional Together. 💚\n\nIt is a little space where we can laugh, learn more about each other, listen with care, and make room for the kind of connection we both deserve. No pressure, no need to have all the answers. Just two people choosing to keep becoming, intentionally, together. 🧪✨'+personalWords+'\n\nIf you are open to it, I would love for you to join me. Here is your personal invitation:\n'+invitationLink+'\n\nBetter Communication. Brighter Tomorrows. 💛';
   $('invitePreview').textContent=invitation;
+  $('inviteResult').classList.remove('hidden');
+  $('inviteResult').scrollIntoView({behavior:'smooth',block:'nearest'});
   $('sendInvite').href='mailto:'+contact+'?subject='+encodeURIComponent('Your invitation to B. I. T. — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
   $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
   if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
@@ -538,7 +546,7 @@ $('makeInvite').addEventListener('click',async()=>{
   $('inviteVialStatus').textContent='Secure invitation created for '+contact+'. It expires in seven days and can be accepted once.';
   toast('Invitation ready. Open email draft or copy the invitation.');
  }catch(e){console.error('B. I. T. invitation creation failed:',e);toast(e.message||'Could not create the invitation.')}
- finally{button.disabled=false;button.textContent='Prepare invitation'}
+ finally{button.disabled=false;button.textContent='💌 Create my invitation'}
 });
 $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('sharedGameArea').classList.remove('hidden');$('sharedGameArea').scrollIntoView({behavior:'smooth',block:'start'});});
 $('copyInvite').addEventListener('click',async()=>{
