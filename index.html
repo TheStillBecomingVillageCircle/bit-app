@@ -64,6 +64,19 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .joinStage{--a:#39d9d0;--b:#e8c77b;position:relative;aspect-ratio:440/390;width:100%;max-width:440px;margin:14px auto;overflow:hidden}
 .chemistryFluid,.chemistryGlass{position:absolute;inset:0;width:100%;height:100%;display:block}
 .chemistryGlass{pointer-events:none;filter:drop-shadow(0 5px 10px #0005)}
+
+/* Private, signature-color glass heart envelope */
+.care-wrap{margin-top:14px;padding:14px;text-align:center;border:1px solid #d6c49a66;border-radius:18px;background:linear-gradient(145deg,#f5fffb10,#e7d5a914)}
+.care-heart{border:0;background:transparent;cursor:pointer;padding:0;display:block;margin:auto;max-width:170px;width:46%;min-width:120px}
+.care-heart svg{display:block;width:100%;height:auto;filter:drop-shadow(0 5px 9px #0003)}
+.care-heart:focus-visible{outline:3px solid #c9a867;outline-offset:4px;border-radius:16px}
+.care-mist{animation:careDrift 7s ease-in-out infinite alternate;transform-origin:center}
+.care-mist.second{animation-duration:9s;animation-direction:alternate-reverse}
+@keyframes careDrift{from{transform:translate(-12px,5px);opacity:.35}to{transform:translate(12px,-8px);opacity:.8}}
+@media(prefers-reduced-motion:reduce){.care-mist{animation:none}}
+.care-letter{max-width:480px;margin:12px auto 0;text-align:left;padding:16px;border:1px solid #c9aa704d;border-radius:15px;background:var(--card,#fffdf8)}
+.care-letter p{margin:8px 0;line-height:1.5}
+.care-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 </style>
 </head>
 <body>
@@ -126,7 +139,25 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 <section id="messages" class="view">
  <h1 class="sectiontitle">Our conversation</h1><p class="sectionintro">A space to communicate with care—not to erase difficult feelings. Boundaries, disagreement, and honest concerns belong here too.</p>
  <div class="card"><div id="messageList"><div class="empty"><div class="glyph">♡</div><h3>No messages yet</h3><p>Your shared conversation will appear here after you connect with your person.</p></div></div>
- <div class="field"><label for="messageDraft">Your message</label><textarea id="messageDraft" placeholder="What do you want your person to understand?"></textarea></div><div class="actions"><button class="btn" id="checkMessage">Review before sending</button><button class="btn secondary" data-go="lab">Reflect first</button></div><div id="assessment" class="hidden"></div></div>
+ <div class="field"><label for="messageDraft">Your message</label><textarea id="messageDraft" placeholder="What do you want your person to understand?"></textarea></div><div class="actions"><button class="btn" id="checkMessage">Review before sending</button><button class="btn secondary" data-go="lab">Reflect first</button></div><div id="assessment" class="hidden"></div><div id="careEnvelope" class="care-wrap hidden" aria-label="Private support">
+ <button type="button" id="careOpen" class="care-heart" aria-label="Open a private moment of care" aria-expanded="false">
+ <svg viewBox="0 0 200 182" role="img" aria-label="Heart-shaped glass envelope with swirling cloudy liquid-gas">
+ <defs><clipPath id="careHeartClip"><path d="M100 166 C78 147 16 102 16 62 C16 17 72 10 100 47 C128 10 184 17 184 62 C184 102 122 147 100 166Z"/></clipPath><linearGradient id="careGlass" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff" stop-opacity=".65"/><stop offset=".55" stop-color="#c8fff2" stop-opacity=".13"/><stop offset="1" stop-color="#fff" stop-opacity=".4"/></linearGradient><filter id="careBlur"><feGaussianBlur stdDeviation="12"/></filter></defs>
+ <path d="M100 166 C78 147 16 102 16 62 C16 17 72 10 100 47 C128 10 184 17 184 62 C184 102 122 147 100 166Z" fill="url(#careGlass)" stroke="#c4a56b" stroke-width="3"/>
+ <g clip-path="url(#careHeartClip)" fill="var(--care-color,#39d9d0)" filter="url(#careBlur)"><ellipse class="care-mist" cx="67" cy="72" rx="56" ry="31" opacity=".64"/><ellipse class="care-mist second" cx="130" cy="99" rx="55" ry="39" opacity=".65"/><ellipse class="care-mist" cx="90" cy="135" rx="58" ry="22" opacity=".4"/></g>
+ <path d="M25 59 Q64 101 100 125 Q136 101 175 59 M30 107 Q64 85 100 125 Q136 85 170 107" fill="none" stroke="#c4a56b" stroke-width="2" opacity=".88"/>
+ <path d="M100 166 C78 147 16 102 16 62 C16 17 72 10 100 47 C128 10 184 17 184 62 C184 102 122 147 100 166Z" fill="none" stroke="#fff" stroke-width="1" opacity=".6"/>
+ </svg></button>
+ <div class="small" style="margin-top:5px">💌 A Moment for You</div>
+ <div id="careLetter" class="care-letter hidden">
+ <strong>Your well-being matters.</strong>
+ <p>Something in these words may deserve extra care. You deserve to set boundaries and feel safe. You do not have to reply or decide anything right now.</p>
+ <p class="small">If you want confidential support in the U.S., the National Domestic Violence Hotline is available at <strong>800-799-7233</strong> or text <strong>START</strong> to <strong>88788</strong>.</p>
+ <div class="care-actions"><a class="btn secondary" href="https://www.thehotline.org/" target="_blank" rel="noopener noreferrer">Explore support</a><button type="button" class="btn secondary" id="careClose">Close letter</button></div>
+ <p class="small muted">This is a private, on-device cue—not a diagnosis or a determination of abuse. If someone can see your screen, consider using a safer device.</p>
+ </div>
+ <button type="button" class="btn secondary" id="careDismiss" style="margin-top:8px">Not now</button>
+ </div></div>
  <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:750">How B. I. T. reviews messages (not AI)</summary><p>B. I. T. currently checks for a small set of phrases. It does not understand the full context or decide whether your feelings are valid.</p><ul><li>Broad statements about not being heard or listened to — asks for specific context.</li><li>Absolute phrases such as “you always,” “you never,” or “every single time” — suggests a specific example.</li><li>Direct insults — suggests focusing on the behavior and its impact.</li><li>Threats — warns against sending threatening language.</li><li>Commands such as “shut up” — suggests asking for a pause or naming a need.</li></ul><p class="small muted">Profanity by itself is not a violation. Passing these checks does not mean a message is safe or appropriate. Your original message remains yours to edit.</p></details><p class="small muted">Shared messages require an active B. I. T. connection. Private reflections and Recipe Room activities are not yet synchronized between accounts.</p>
 </section>
 <section id="invite" class="view">
@@ -645,6 +676,34 @@ $('modeMatch').addEventListener('click',()=>bitStart('match'));
 $('modePuzzle').addEventListener('click',()=>bitStart('puzzle'));
 $('bitTryAgain').addEventListener('click',()=>{bitFeedback.classList.add('hidden');bitHelp.classList.add('hidden')});
 $('bitRequestHelp').addEventListener('click',()=>{const pair=bitLawPairs[bitStep%bitLawPairs.length];const feeling=$('bitShareOverwhelmed').checked?' They chose to share that they are feeling a little overwhelmed.':'';bitSignal.textContent='💌 A Connection Moment: Your person has invited you to help them understand this concept a little better.'+feeling+' Would you like to explore it together? Starting clue: '+pair.clue+' (This invitation is displayed on this device only for now.)';bitSignal.classList.remove('hidden');bitHelp.classList.add('hidden');bitSignal.scrollIntoView({behavior:'smooth',block:'nearest'})});
+
+/* Private safety cue: limited phrase matching on the local draft only.
+   Never uploads the detection result or notifies a partner. */
+const careBox=$('careEnvelope'),careLetter=$('careLetter'),careButton=$('careOpen');
+let careDismissedDraft='';
+const careSignals=[
+ /\\b(?:i(?:'m| am) (?:afraid|scared) (?:of|to)|i (?:feel|don't feel) (?:unsafe|safe)|afraid (?:of|to) (?:say no|leave|disagree))\\b/i,
+ /\\b(?:i(?:'ll| will) (?:hurt|kill|hit) you|(?:hurt|kill|hit) you if|(?:threatened|threatening) (?:to )?(?:hurt|kill|hit))\\b/i,
+ /\\b(?:won't let me leave|not allowed to leave|locked me in|blocked (?:the|my) (?:door|exit)|forced me to (?:have sex|do sexual)|sex without (?:my )?consent)\\b/i,
+ /\\b(?:tracking my location|stalking me|watching my every move|checking my phone without permission|threatened to share (?:my )?(?:photos|pictures))\\b/i
+];
+function careUpdate(){
+ const draft=$('messageDraft').value;
+ const detected=careSignals.some(re=>re.test(draft));
+ careBox.classList.toggle('hidden',!detected||careDismissedDraft===draft);
+ if(!detected){careLetter.classList.add('hidden');careButton.setAttribute('aria-expanded','false')}
+ const uid=typeof currentUserId!=='undefined'?currentUserId:null;
+ const stored=uid?localStorage.getItem('bit-color-'+uid):null;
+ const selected=$('inviteColor')?.value;
+ const color=/^#[0-9a-f]{6}$/i.test(stored||'')?stored:(/^#[0-9a-f]{6}$/i.test(selected||'')?selected:'#39d9d0');
+ careBox.style.setProperty('--care-color',color);
+}
+$('messageDraft').addEventListener('input',careUpdate);
+$('inviteColor').addEventListener('input',careUpdate);
+careButton.addEventListener('click',()=>{const opening=careLetter.classList.contains('hidden');careLetter.classList.toggle('hidden',!opening);careButton.setAttribute('aria-expanded',String(opening))});
+$('careClose').addEventListener('click',()=>{careLetter.classList.add('hidden');careButton.setAttribute('aria-expanded','false')});
+$('careDismiss').addEventListener('click',()=>{careDismissedDraft=$('messageDraft').value;careBox.classList.add('hidden');careLetter.classList.add('hidden')});
+careUpdate();
 
 })();
 </script>
