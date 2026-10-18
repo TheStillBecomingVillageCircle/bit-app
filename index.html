@@ -130,32 +130,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <details class="card" style="margin-top:14px"><summary style="cursor:pointer;font-weight:750">How B. I. T. reviews messages (not AI)</summary><p>B. I. T. currently checks for a small set of phrases. It does not understand the full context or decide whether your feelings are valid.</p><ul><li>Broad statements about not being heard or listened to — asks for specific context.</li><li>Absolute phrases such as “you always,” “you never,” or “every single time” — suggests a specific example.</li><li>Direct insults — suggests focusing on the behavior and its impact.</li><li>Threats — warns against sending threatening language.</li><li>Commands such as “shut up” — suggests asking for a pause or naming a need.</li></ul><p class="small muted">Profanity by itself is not a violation. Passing these checks does not mean a message is safe or appropriate. Your original message remains yours to edit.</p></details><p class="small muted">Shared messages require an active B. I. T. connection. Private reflections and Recipe Room activities are not yet synchronized between accounts.</p>
 </section>
 <section id="invite" class="view">
- <h1 class="sectiontitle">Start Your Shared Recipe 🧪</h1>
- <div class="card labintro">
-  <div class="eyebrow">A shared experience · Any relationship structure</div>
-  <h2 style="margin:0">The Recipe Room 🧪</h2>
-  <p>Choose your own color, answer questions, and discover what you understand about one another. Each person keeps their own vial. When everyone is ready, the colors can come together to create a shared recipe.</p>
-  <div class="field"><label for="labGroupName">Name this recipe</label><input id="labGroupName" placeholder="e.g. The Adams family, our chosen family, our connection"></div>
-  <div class="grid" style="margin-top:0">
-    <div class="field span6"><label for="labPeople">How many people are participating?</label><select id="labPeople"><option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="5">5 people</option><option value="6">6 people</option></select></div>
-    <div class="field span6"><label for="labType">What kind of connection?</label><select id="labType"><option>Romantic relationship</option><option>Polyamorous relationship</option><option>Family</option><option>Friendship</option><option>Chosen family</option><option>Other meaningful relationship</option></select></div>
-  </div>
-  <div id="vialStage" class="vialstage" aria-label="Each participant's vial fills as the experience progresses">
-    <div class="vialperson"><div class="vial"><div class="liquid" id="liquid0"></div></div><div class="vialname">You</div><div class="vialstatus" id="vialStatus0">Ready to begin</div></div>
-    <div class="vialperson"><div class="vial"><div class="liquid" id="liquid1"></div></div><div class="vialname">Your person</div><div class="vialstatus" id="vialStatus1">Their color awaits</div></div>
-  </div>
-  <div class="labprogress"><span id="labProgressFill"></span></div>
-  <div id="labGameArea">
-    <div class="field"><label for="labSelfName">What name should appear on your vial?</label><input id="labSelfName" placeholder="Your name or nickname"></div>
-    <div class="field"><label for="labPartnerNames">Names or nicknames of the other participants</label><input id="labPartnerNames" placeholder="Separate names with commas"></div>
-    <div id="labColorPickers" class="personcolors"></div>
-    <button class="btn gold" id="labStart">🧪 Begin our shared experience</button>
-  </div>
-  <div id="labQuestionArea" class="hidden"></div>
-  <div id="labRecipeArea" class="hidden"></div>
-  <p class="small muted" style="margin:0">Prototype experience: vial progress is a playful demo in this browser. It does not send invitations, create accounts, or sync participants yet.</p>
-</div>
- <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch two signature colors meet and intertwine while staying beautifully distinct. You can replay your chemistry whenever you want.</p><button class="btn" id="togetherCeremony">💨 Explore our chemistry ⚛️</button></div>
+ <h1 class="sectiontitle">Connect with your person 💚</h1>
  <p class="sectionintro">Start your shared B. I. T. experience here. Invite the person or people you want to build with, then continue into the Recipe Room—all in one connected space. Your chemistry story begins when you invite someone to connect. When they join, they choose their own color—and then you can begin discovering what helps you grow together.</p>
  <div class="grid">
   <div class="card span6">
@@ -182,6 +157,31 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
    <button class="btn secondary" id="openRecipeGame">🧪 Preview the shared game</button>
   </div>
  </div>
+ <div class="card labintro">
+  <div class="eyebrow">A shared experience · Any relationship structure</div>
+  <h2 style="margin:0">The Recipe Room 🧪</h2>
+  <p>Choose your own color, answer questions, and discover what you understand about one another. Each person keeps their own vial. When everyone is ready, the colors can come together to create a shared recipe.</p>
+  <div class="field"><label for="labGroupName">Name this recipe</label><input id="labGroupName" placeholder="e.g. The Adams family, our chosen family, our connection"></div>
+  <div class="grid" style="margin-top:0">
+    <div class="field span6"><label for="labPeople">How many people are participating?</label><select id="labPeople"><option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="5">5 people</option><option value="6">6 people</option></select></div>
+    <div class="field span6"><label for="labType">What kind of connection?</label><select id="labType"><option>Romantic relationship</option><option>Polyamorous relationship</option><option>Family</option><option>Friendship</option><option>Chosen family</option><option>Other meaningful relationship</option></select></div>
+  </div>
+  <div id="vialStage" class="vialstage" aria-label="Each participant's vial fills as the experience progresses">
+    <div class="vialperson"><div class="vial"><div class="liquid" id="liquid0"></div></div><div class="vialname">You</div><div class="vialstatus" id="vialStatus0">Ready to begin</div></div>
+    <div class="vialperson"><div class="vial"><div class="liquid" id="liquid1"></div></div><div class="vialname">Your person</div><div class="vialstatus" id="vialStatus1">Their color awaits</div></div>
+  </div>
+  <div class="labprogress"><span id="labProgressFill"></span></div>
+  <div id="labGameArea">
+    <div class="field"><label for="labSelfName">What name should appear on your vial?</label><input id="labSelfName" placeholder="Your name or nickname"></div>
+    <div class="field"><label for="labPartnerNames">Names or nicknames of the other participants</label><input id="labPartnerNames" placeholder="Separate names with commas"></div>
+    <div id="labColorPickers" class="personcolors"></div>
+    <button class="btn gold" id="labStart">🧪 Begin our shared experience</button>
+  </div>
+  <div id="labQuestionArea" class="hidden"></div>
+  <div id="labRecipeArea" class="hidden"></div>
+  <p class="small muted" style="margin:0">Prototype experience: vial progress is a playful demo in this browser. It does not send invitations, create accounts, or sync participants yet.</p>
+</div>
+ <div class="card" style="margin:14px 0 22px"><h3>🧪 Your Connection Ceremony</h3><p>Watch two signature colors meet and intertwine while staying beautifully distinct. You can replay your chemistry whenever you want.</p><button class="btn" id="togetherCeremony">💨 Explore our chemistry ⚛️</button></div>
 <div id="sharedGameArea" class="hidden">
  <h2 class="sectiontitle">Now, let’s play together 🧪</h2><p class="sectionintro">The person you invited is the person you explore with. Choose participant colors, answer questions, and see what you discover together. This is a local demo until real accounts and invitations are connected.</p>
  <div class="card labintro" style="margin-top:16px">
@@ -266,7 +266,7 @@ async function createAccount(){
  if(password.length<6){accountFeedback('Use a password with at least 6 characters.');return}
  const button=$('createAccountBtn');button.disabled=true;button.textContent='Creating…';
  try{
-  const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:'https://thestillbecomingvillagecircle.github.io/bit-app/'+window.location.search}});
+  const {data,error}=await supabaseClient.auth.signUp({email,password,options:{data:{display_name:name},emailRedirectTo:'https://thestillbecomingvillagecircle.org/bit-app/'+window.location.search}});
   if(error)throw error;
   if(data.user&&data.session){
    await saveProfile(data.user,name);showAccount(data.user);accountFeedback('Your account was created and you are signed in.',true);
@@ -491,9 +491,9 @@ $('makeInvite').addEventListener('click',async()=>{
   if(partnershipError)throw partnershipError;
   const {error:inviteError}=await supabaseClient.from('partnership_invites').insert({partnership_id:partnership.id,inviter_id:user.id,invitee_email:contact,token_hash:tokenHash});
   if(inviteError)throw inviteError;
-  invitationLink='https://thestillbecomingvillagecircle.github.io/bit-app/?invite='+token;
+  invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?invite='+token;
   const note=$('inviteNote').value.trim()||'I would love for us to try a new way to communicate with care and intention.';
-  invitation='Hey '+name+' 💛\n\n'+note+'\n\nI found B. I. T. — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\nTap this personal invitation link to join our shared B. I. T. space: '+invitationLink+'\n\n“Better Communication. Brighter Tomorrows.”';
+  invitation='Hey '+name+' 💛\n\n'+(note.trim().toLowerCase()==='hi'?'':note+'\n\n')+'\n\nI found B. I. T. — Becoming Intentional Together. It is a space for us to practice listening, reflect before we respond, and build better communication together. There is no pressure; I want us both to choose it freely. Want to explore it with me?\n\nTap this personal invitation link to join our shared B. I. T. space: '+invitationLink+'\n\n“Better Communication. Brighter Tomorrows.”';
   $('invitePreview').textContent=invitation;
   $('sendInvite').href='mailto:'+contact+'?subject='+encodeURIComponent('Your invitation to B. I. T. — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
   $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
