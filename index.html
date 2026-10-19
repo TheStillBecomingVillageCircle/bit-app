@@ -567,7 +567,7 @@ $('makeInvite').addEventListener('click',async()=>{
   const keys=Object.keys(notes);
   const note=tone==='own'?$('inviteNote').value.trim():notes[tone==='surprise'?keys[Math.floor(Math.random()*keys.length)]:tone];
   const personalWords=note ? '\n\n'+note : '';
-  invitation='Hey '+name+' 💛\n\nI came across something I would love for us to experience together. It is called B. I. T. — Becoming Intentional Together. 💚\n\nIt is a little space where we can laugh, learn more about each other, listen with care, and make room for the kind of connection we both deserve. No pressure, no need to have all the answers. Just two people choosing to keep becoming, intentionally, together. 🧪✨'+personalWords+'\n\nIf you are open to it, I would love for you to join me. Here is your personal invitation:\n'+invitationLink+'\n\nBetter Communication. Brighter Tomorrows. 💛';
+  invitation='Hey '+name+' 💛\n\nI came across something I would love for us to experience together. It is called B. I. T. — Becoming Intentional Together. 💚\n\nIt is a little space where we can laugh, learn more about each other, listen with care, and make room for the kind of connection we both deserve. No pressure, no need to have all the answers. Just two people choosing to keep becoming, intentionally, together. 🧪✨'+personalWords+'\n\nTo connect with me on B. I. T., open the link below, sign in or create your account, and accept this invitation. Our accounts will connect only after you accept.\n\nAccept your invitation to B. I. T.:\n'+invitationLink+'\n\nBetter Communication. Brighter Tomorrows. 💛';
   $('invitePreview').textContent=invitation;
   $('inviteResult').classList.remove('hidden');
   $('inviteResult').scrollIntoView({behavior:'smooth',block:'nearest'});
