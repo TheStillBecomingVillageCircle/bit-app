@@ -291,8 +291,13 @@ function updateSignaturePreview(){const choice=$('signaturePreset').value,custom
 $('signaturePreset').addEventListener('change',updateSignaturePreview);
 $('signatureCustom').addEventListener('input',updateSignaturePreview);
 $('signatureColor').addEventListener('input',()=>{$('signaturePreset').value='other';updateSignaturePreview()});
+const bitValidHex=c=>/^#[0-9a-f]{6}$/i.test(c||'');
+let bitPartnerColor=null;
+function bitApplyCeremonyColors(){const stage=$('joinStage');if(!stage)return;const own=currentUserId&&localStorage.getItem('bit-color-'+currentUserId);stage.style.setProperty('--a',bitValidHex(own)?own:'#39d9d0');stage.style.setProperty('--b',bitValidHex(bitPartnerColor)?bitPartnerColor:'#e8c77b')}
+async function bitStoreColor(color){if(!currentUserId||!supabaseClient||!bitValidHex(color))return;const {error}=await supabaseClient.from('profiles').update({signature_color:color}).eq('id',currentUserId);if(error){console.warn('Color sync unavailable:',error.message);toast('Color saved on this device; account color sync needs database setup.')}else{bitApplyCeremonyColors()}}
+async function bitLoadOwnColor(user){if(!user||!supabaseClient)return;const {data,error}=await supabaseClient.from('profiles').select('signature_color').eq('id',user.id).maybeSingle();if(error){console.warn('Could not load account color:',error.message);return}const key='bit-color-'+user.id;if(bitValidHex(data?.signature_color)){localStorage.setItem(key,data.signature_color);showColorOnboarding(user)}else{const local=localStorage.getItem(key);if(bitValidHex(local))await bitStoreColor(local)}bitApplyCeremonyColors()}
 function showColorOnboarding(user){if(!user)return;const key='bit-color-'+user.id;const existing=localStorage.getItem(key);$('colorOnboarding').classList.toggle('hidden',!!existing);if(existing){const hex=/^#[0-9a-f]{6}$/i.test(existing)?existing:'#39d9d0';$('signatureColor').value=hex;$('inviteColor').value=hex;refreshInviteColor();}updateSignaturePreview();}
-$('saveSignatureColor').addEventListener('click',()=>{if(!currentUserId)return;const choice=$('signaturePreset').value,description=$('signatureCustom').value.trim();if(choice==='other'&&!description){$('colorFeedback').textContent='Describe your color or combination first.';return}const color=choice==='blend'?'#39d9d0':$('signatureColor').value;localStorage.setItem('bit-color-'+currentUserId,color);localStorage.setItem('bit-color-style-'+currentUserId,choice==='blend'?'linear-gradient(125deg,#39d9d0,#7df0d0)':color);localStorage.setItem('bit-color-label-'+currentUserId,choice==='blend'?'Aqua + mint green':choice==='other'?description:$('signaturePreset').selectedOptions[0].textContent);$('inviteColor').value=color;refreshInviteColor();$('colorOnboarding').classList.add('hidden');toast('Your signature color is ready!');});
+$('saveSignatureColor').addEventListener('click',()=>{if(!currentUserId)return;const choice=$('signaturePreset').value,description=$('signatureCustom').value.trim();if(choice==='other'&&!description){$('colorFeedback').textContent='Describe your color or combination first.';return}const color=choice==='blend'?'#39d9d0':$('signatureColor').value;localStorage.setItem('bit-color-'+currentUserId,color);localStorage.setItem('bit-color-style-'+currentUserId,choice==='blend'?'linear-gradient(125deg,#39d9d0,#7df0d0)':color);localStorage.setItem('bit-color-label-'+currentUserId,choice==='blend'?'Aqua + mint green':choice==='other'?description:$('signaturePreset').selectedOptions[0].textContent);$('inviteColor').value=color;refreshInviteColor();$('colorOnboarding').classList.add('hidden');bitStoreColor(color);toast('Your signature color is ready!');});
 async function saveProfile(user, displayName){
  if(!supabaseClient||!user)return;
  const payload={id:user.id,display_name:displayName||user.user_metadata?.display_name||user.email||''};
@@ -355,10 +360,10 @@ if(supabaseClient){
  supabaseClient.auth.getSession().then(async({data,error})=>{
   if(error){accountFeedback(error.message);return}
   const user=data.session?.user;
-  if(user){showAccount(user);currentUserId=user.id;showColorOnboarding(user);await saveProfile(user);await acceptPendingInvite(user);await loadSharedConversation(user)}
+  if(user){showAccount(user);currentUserId=user.id;showColorOnboarding(user);await saveProfile(user);await bitLoadOwnColor(user);await acceptPendingInvite(user);await loadSharedConversation(user)}
   else if(pendingInviteToken){accountFeedback('You have a B. I. T. invitation. Create an account or sign in with the email address it was sent to, then B. I. T. will connect you both.')}
  });
- supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){showColorOnboarding(session.user);acceptPendingInvite(session.user);loadSharedConversation(session.user)}else{activePartnership=null;messages=[];renderMessages()}});
+ supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){showColorOnboarding(session.user);acceptPendingInvite(session.user);loadSharedConversation(session.user);bitLoadOwnColor(session.user)}else{activePartnership=null;bitPartnerColor=null;bitApplyCeremonyColors();messages=[];renderMessages()}});
 }
 
 const prompts=["Before you respond, get curious about your person's experience. What might they be feeling, and what could you ask to better understand?","Can you share how you feel without assuming you know your person’s intentions?","What is one thing you could ask your person to better understand their experience?","What have you heard your person actually say, and what might you still need to ask?","Today, can you listen to understand your person’s words and emotions before forming a conclusion?"];
@@ -450,11 +455,11 @@ $('inviteColorChoice').addEventListener('change',()=>{
  if(color==='custom'){$('inviteColor').click();return}
  $('inviteColor').value=color;
  refreshInviteColor();
- if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,color);
+ if(currentUserId){localStorage.setItem('bit-color-'+currentUserId,color);bitStoreColor(color)}
  careUpdate();
 });
 $('inviteColor').addEventListener('input',()=>{refreshInviteColor();careUpdate()});
-$('inviteColor').addEventListener('change',()=>{refreshInviteColor();if(currentUserId)localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value)});
+$('inviteColor').addEventListener('change',()=>{refreshInviteColor();if(currentUserId){localStorage.setItem('bit-color-'+currentUserId,$('inviteColor').value);bitStoreColor($('inviteColor').value)}});
 window.addEventListener('pageshow',refreshInviteColor);
 refreshInviteColor();
 function updateInviteVial(){
@@ -488,12 +493,13 @@ async function loadSharedConversation(user){
  const {data:partnerships,error:pError}=await supabaseClient.from('partnerships').select('id,member_one,member_two,status,created_at').eq('status','active').or('member_one.eq.'+user.id+',member_two.eq.'+user.id).order('created_at',{ascending:false}).limit(1);
  if(pError){console.warn('Could not load B. I. T. partnership:',pError.message);return}
  activePartnership=partnerships&&partnerships.length?partnerships[0]:null;
- connectedPartnerName='';
+ connectedPartnerName='';bitPartnerColor=null;bitApplyCeremonyColors();
  
  if(!activePartnership){messages=[];renderMessages();return}
  const partnerId=activePartnership.member_one===user.id?activePartnership.member_two:activePartnership.member_one;
  if(partnerId){
-  const {data:partnerProfile,error:profileError}=await supabaseClient.from('profiles').select('display_name').eq('id',partnerId).maybeSingle();
+  const {data:partnerProfile,error:profileError}=await supabaseClient.from('profiles').select('display_name,signature_color').eq('id',partnerId).maybeSingle();
+  if(!profileError){bitPartnerColor=bitValidHex(partnerProfile?.signature_color)?partnerProfile.signature_color:null;bitApplyCeremonyColors()}
   if(!profileError&&partnerProfile?.display_name){
    const partnerName=partnerProfile.display_name.trim();
    if(partnerName){
@@ -617,9 +623,9 @@ const lawGuidance=[
 ];
 $('lawHelp').addEventListener('change',()=>{const i=Number($('lawHelp').value),result=$('lawHelpResult');if($('lawHelp').value===''){result.classList.add('hidden');return}result.classList.remove('hidden');result.textContent='Suggested starting point: The Law of '+lawGuidance[i][0]+'. '+lawGuidance[i][1]+' This is a conversation prompt, not a legal rule.'});
 
-function announceJoin(){if(!activePartnership||!currentUserId)return;const key='bit-seen-'+currentUserId+'-'+activePartnership.id;if(localStorage.getItem(key))return;const panel=$('joinNotice');$('joinTitle').textContent=(connectedPartnerName||'Your person')+' has joined!';$('joinStage').style.setProperty('--a',localStorage.getItem('bit-color-'+currentUserId)||'#39d9d0');$('joinDescription').textContent='Your invitation has been accepted! Your journey of intentional connection begins here. Let\'s discover what helps you understand each other, celebrate your individuality, and grow together without losing yourselves.';panel.classList.remove('hidden');localStorage.setItem(key,'yes');go('home');startChemistryFluid();}
+function announceJoin(){if(!activePartnership||!currentUserId)return;const key='bit-seen-'+currentUserId+'-'+activePartnership.id;if(localStorage.getItem(key))return;const panel=$('joinNotice');$('joinTitle').textContent=(connectedPartnerName||'Your person')+' has joined!';bitApplyCeremonyColors();$('joinDescription').textContent='Your invitation has been accepted! Your journey of intentional connection begins here. Let\'s discover what helps you understand each other, celebrate your individuality, and grow together without losing yourselves.';panel.classList.remove('hidden');localStorage.setItem(key,'yes');go('home');startChemistryFluid();}
 $('togetherCeremony').addEventListener('click',()=>{$('showJoinCeremony').click()});
-$('showJoinCeremony').addEventListener('click',()=>{if(!currentUserId){$('joinNotice').classList.add('hidden');go('home');$('accountPanel').scrollIntoView({behavior:'smooth',block:'center'});accountFeedback('Sign in or create an account, then choose your signature color before exploring your chemistry.',false);return}const own=localStorage.getItem('bit-color-'+currentUserId);if(!own){$('joinNotice').classList.add('hidden');showColorOnboarding({id:currentUserId});go('home');$('colorOnboarding').scrollIntoView({behavior:'smooth',block:'center'});return} $('joinStage').style.setProperty('--a',/^#[0-9a-f]{6}$/i.test(own)?own:'#39d9d0');$('joinTitle').textContent=activePartnership?'Explore our chemistry recipe 🧪':'Demo chemistry — awaiting your connection 🧪';$('joinDescription').textContent=activePartnership?'Two distinct colors in one shared journey.':'This is only a demonstration. Your connected person will choose their own signature color.';$('joinNotice').classList.remove('hidden');go('home');replayCeremony()});
+$('showJoinCeremony').addEventListener('click',()=>{if(!currentUserId){$('joinNotice').classList.add('hidden');go('home');$('accountPanel').scrollIntoView({behavior:'smooth',block:'center'});accountFeedback('Sign in or create an account, then choose your signature color before exploring your chemistry.',false);return}const own=localStorage.getItem('bit-color-'+currentUserId);if(!own){$('joinNotice').classList.add('hidden');showColorOnboarding({id:currentUserId});go('home');$('colorOnboarding').scrollIntoView({behavior:'smooth',block:'center'});return} bitApplyCeremonyColors();$('joinTitle').textContent=activePartnership?'Explore our chemistry recipe 🧪':'Demo chemistry — awaiting your connection 🧪';$('joinDescription').textContent=activePartnership?'Two distinct colors in one shared journey.':'This is only a demonstration. Your connected person will choose their own signature color.';$('joinNotice').classList.remove('hidden');go('home');replayCeremony()});
 function replayCeremony(){startChemistryFluid();$('joinStage').scrollIntoView({behavior:'smooth',block:'center'});}
 let chemistryFrame=0,chemistrySequenceTimer=0;
 function startChemistryFluid(){
