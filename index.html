@@ -149,13 +149,13 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  <div class="hidden" aria-hidden="true"><span id="reflectionCount">0</span><span id="messageCount">0</span></div>
 </section>
 <section id="lab" class="view">
- <h1 class="sectiontitle">The B. I. T. Laboratory 🧪</h1><p class="sectionintro">Sometimes we know what we feel but not how to say it. Start here with your unfiltered thoughts, understand what you want your person to hear, and turn reflection into an open conversation when you are ready. Nothing is shared automatically.</p>
+ <h1 class="sectiontitle">The B. I. T. Laboratory 🧪</h1><p class="sectionintro">Put your thoughts into words. Reflect privately before deciding what to share.</p>
 <div class="card">
   <div class="eyebrow">Step 1 · Get it out</div><div class="field"><label for="rawThought">What's on your mind right now?</label><textarea id="rawThought" placeholder="Start with what you really feel. You can shape these thoughts into something you want to share…"></textarea></div>
   <div class="promptchips"><button class="chip" data-fill="I felt…">I felt…</button><button class="chip" data-fill="The story I'm telling myself is…">The story I'm telling myself is…</button><button class="chip" data-fill="What I wish they understood is…">I wish they understood…</button><button class="chip" data-fill="What I need right now is…">What I need…</button></div>
   <button class="btn" id="reflectBtn">Help me reflect</button> <button class="btn secondary" type="button" id="clearPrivateReflection">Clear private reflection on this device</button><div id="reflectionArea" class="hidden"></div>
  </div>
- <div class="notice">🔒 <strong>Your choice to share:</strong> Reflect is a starting point for honest conversations, not a place where feelings have to stay hidden. You decide what to share and when. For now, reflections stay in this browser and are not sent automatically to your person or an AI service. Browser storage is not a secure private journal, so avoid entering sensitive information.</div>
+ <details class="notice"><summary style="cursor:pointer;font-weight:700">🔒 About your reflection privacy</summary><p style="margin:10px 0 0">Reflections stay in this browser and are not automatically sent to your person or an AI service. Browser storage is not a secure private journal; avoid sensitive information. You decide what to share and when.</p></details>
 </section>
 <section id="messages" class="view">
  <h1 class="sectiontitle">Our conversation</h1><p class="sectionintro">A space to communicate with care—not to erase difficult feelings. Boundaries, disagreement, and honest concerns belong here too.</p>
@@ -258,7 +258,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
  </div>
 </section>
 </main>
-<footer class="foot">B. I. T. · Becoming Intentional Together<br>Account sign-in is available. Some shared experiences remain browser-only demos; AI features are not connected.</footer>
+<footer class="foot">B. I. T. · Becoming Intentional Together</footer>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
