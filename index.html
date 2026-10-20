@@ -97,21 +97,22 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .bit-waiting-card .bit-waiting-status{color:#e6c98d;font-size:.8rem;letter-spacing:.03em}
 
 .bit-color-hearts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:340px}.bit-color-heart{font-size:3rem;line-height:1;min-height:62px;border:1px solid #d4b97988;border-radius:14px;background:#08282d;cursor:pointer;text-shadow:0 1px 2px #0008}.bit-color-heart[aria-pressed="true"]{outline:2px solid #e8c77b;outline-offset:2px}.bit-color-heart[data-color="#000000"]{text-shadow:-1px -1px #d5c8ac,1px 1px #d5c8ac}
-#bitWelcomeRack{display:none}body:not(.bit-authenticated) #bitWelcomeRack{display:block;width:min(100%,440px);margin:12px auto 0;filter:drop-shadow(0 12px 18px #0004)}#bitWelcomeRack svg{display:block;width:100%;height:auto}
-@media(prefers-reduced-motion:no-preference){body:not(.bit-authenticated) #bitWelcomeRack{animation:rackReveal .7s ease-out both}@keyframes rackReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}}
-/* Signed-out experience: B. I. T. branding with sign-in only. */
-body:not(.bit-authenticated) .top,body:not(.bit-authenticated) .nav,body:not(.bit-authenticated) #bitMenu,body:not(.bit-authenticated) .foot,body:not(.bit-authenticated) #home> :not(#accountPanel):not(#bitWelcomeRack),body:not(.bit-authenticated) main>.view:not(#home){display:none!important}
-body:not(.bit-authenticated) #home{display:block!important}
-body:not(.bit-authenticated){background:radial-gradient(ellipse at top right,#16484a 0%,#082d32 42%,#071c2b 100%)!important;color:#f4f5ee!important}
+/* Authentication layout: reuse the app's existing colors and component styles. */
+#bitWelcomeRack{display:none}
+body:not(.bit-authenticated) .top,
+body:not(.bit-authenticated) .nav,
+body:not(.bit-authenticated) #bitMenu,
+body:not(.bit-authenticated) .foot,
+body:not(.bit-authenticated) #home > :not(#accountPanel):not(#bitWelcomeRack),
+body:not(.bit-authenticated) main > .view:not(#home){display:none}
+body:not(.bit-authenticated) #home{display:block}
 body:not(.bit-authenticated) .shell{max-width:520px;padding-top:clamp(50px,12vh,130px)}
-body:not(.bit-authenticated) #accountPanel{background:linear-gradient(145deg,#103c40,#0b3037)!important;color:#f4f5ee!important;border:1px solid #2d5a5b!important;box-shadow:0 16px 40px #0003!important}
-body:not(.bit-authenticated) #accountPanel .glyph{background:#1b5656!important;color:#7df0d0!important}
-body:not(.bit-authenticated) #accountPanel .muted,body:not(.bit-authenticated) #accountPanel .small,body:not(.bit-authenticated) #accountPanel p{color:#b5c9c5!important}
-body:not(.bit-authenticated) #accountPanel label{color:#dce8e2!important}
-body:not(.bit-authenticated) #accountPanel input{background:#08272e!important;color:#f4f5ee!important;border:1px solid #386567!important}
-body:not(.bit-authenticated) #accountPanel .btn{background:#7df0d0!important;color:#062a2e!important}
-body:not(.bit-authenticated) #accountPanel .btn.secondary{background:transparent!important;color:#f4f5ee!important;border:1px solid #56817c!important}
-body:not(.bit-authenticated) #accountPanel h3{color:#f4f5ee!important}
+body:not(.bit-authenticated) #bitWelcomeRack{display:block;width:min(100%,440px);margin:12px auto 0;filter:drop-shadow(0 12px 18px #0004)}
+#bitWelcomeRack svg{display:block;width:100%;height:auto}
+@media(prefers-reduced-motion:no-preference){
+ body:not(.bit-authenticated) #bitWelcomeRack{animation:rackReveal .7s ease-out both}
+ @keyframes rackReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+}
 </style>
 </head>
 <body>
