@@ -97,17 +97,10 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .bit-waiting-card .bit-waiting-status{color:#e6c98d;font-size:.8rem;letter-spacing:.03em}
 
 .bit-color-hearts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:340px}.bit-color-heart{font-size:3rem;line-height:1;min-height:62px;border:1px solid #d4b97988;border-radius:14px;background:#08282d;cursor:pointer;text-shadow:0 1px 2px #0008}.bit-color-heart[aria-pressed="true"]{outline:2px solid #e8c77b;outline-offset:2px}.bit-color-heart[data-color="#000000"]{text-shadow:-1px -1px #d5c8ac,1px 1px #d5c8ac}
-/* Signed-out experience: neutral account screen only; app unlocks after authentication. */
-body:not(.bit-authenticated){background:#fff;color:#222}
+/* Signed-out experience: B. I. T. branding with sign-in only. */
 body:not(.bit-authenticated) .top,body:not(.bit-authenticated) .nav,body:not(.bit-authenticated) #bitMenu,body:not(.bit-authenticated) .foot,body:not(.bit-authenticated) #home> :not(#accountPanel),body:not(.bit-authenticated) main>.view:not(#home){display:none!important}
 body:not(.bit-authenticated) #home{display:block!important}
 body:not(.bit-authenticated) .shell{max-width:520px;padding-top:clamp(50px,12vh,130px)}
-body:not(.bit-authenticated) #accountPanel{background:#fff;color:#222;border:1px solid #ddd;box-shadow:none}
-body:not(.bit-authenticated) #accountPanel .glyph{background:#f3f3f3;color:#333}
-body:not(.bit-authenticated) #accountPanel .muted,body:not(.bit-authenticated) #accountPanel .small,body:not(.bit-authenticated) #accountPanel label{color:#555}
-body:not(.bit-authenticated) #accountPanel input{background:#fff;color:#222;border:1px solid #bbb}
-body:not(.bit-authenticated) #accountPanel .btn{background:#222;color:#fff}
-body:not(.bit-authenticated) #accountPanel .btn.secondary{background:#fff;color:#222;border:1px solid #999}
 </style>
 </head>
 <body>
