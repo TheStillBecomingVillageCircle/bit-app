@@ -629,7 +629,7 @@ $('makeInvite').addEventListener('click',async()=>{
  if(!supabaseClient){toast('Account service is unavailable. Refresh and try again.');return}
  if(!type){toast('Choose your relationship type.');return}
  if(!name){toast('Name your shared recipe.');$('partnerName').focus();return}
- if(emails.length!==capacity-1 || new Set(emails).size!==emails.length || emails.some(email=>!/^\\S+@\\S+\\.\\S+$/.test(email))){
+ if(emails.length!==capacity-1 || new Set(emails).size!==emails.length || emails.some(email=>!/^\S+@\S+\.\S+$/.test(email))){
   toast('Enter '+(capacity-1)+' different valid email '+(capacity===2?'address.':'addresses.') );$('inviteContact').focus();return;
  }
  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
