@@ -97,23 +97,15 @@ button,input,textarea,select{font:inherit}button{cursor:pointer}.shell{max-width
 .bit-waiting-card .bit-waiting-status{color:#e6c98d;font-size:.8rem;letter-spacing:.03em}
 
 .bit-color-hearts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;max-width:340px}.bit-color-heart{font-size:3rem;line-height:1;min-height:62px;border:1px solid #d4b97988;border-radius:14px;background:#08282d;cursor:pointer;text-shadow:0 1px 2px #0008}.bit-color-heart[aria-pressed="true"]{outline:2px solid #e8c77b;outline-offset:2px}.bit-color-heart[data-color="#000000"]{text-shadow:-1px -1px #d5c8ac,1px 1px #d5c8ac}
-/* Authentication layout: reuse the app's existing colors and component styles. */
-#bitWelcomeRack{display:none}
+/* Signed-out account screen: no chemistry preview before participants join. */
 body:not(.bit-authenticated) .top,
 body:not(.bit-authenticated) .nav,
 body:not(.bit-authenticated) #bitMenu,
 body:not(.bit-authenticated) .foot,
-body:not(.bit-authenticated) #home > :not(#accountPanel):not(#bitWelcomeRack),
+body:not(.bit-authenticated) #home > :not(#accountPanel),
 body:not(.bit-authenticated) main > .view:not(#home){display:none}
 body:not(.bit-authenticated) #home{display:block}
 body:not(.bit-authenticated) .shell{max-width:520px;padding-top:clamp(50px,12vh,130px)}
-body:not(.bit-authenticated) #bitWelcomeRack{display:block;width:min(100%,440px);margin:12px auto 0;filter:drop-shadow(0 12px 18px #0004)}
-#bitWelcomeRack{position:relative;aspect-ratio:420/220}
-#bitWelcomeRack canvas,#bitWelcomeRack svg{position:absolute;inset:0;display:block;width:100%;height:100%}
-@media(prefers-reduced-motion:no-preference){
- body:not(.bit-authenticated) #bitWelcomeRack{animation:rackReveal .7s ease-out both}
- @keyframes rackReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-}
 /* Shared spacing utilities replace repeated inline declarations. */
 .bit-mt-12{margin-top:12px}
 .bit-mt-14{margin-top:14px}
@@ -202,7 +194,6 @@ body:not(.bit-authenticated) #bitWelcomeRack{display:block;width:min(100%,440px)
  <div id="signedInControls" class="hidden"><div class="notice good" id="signedInMessage">You're signed in.</div><div class="actions"><button class="btn secondary" id="editSignatureColor">🎨 My Signature Color</button><button class="btn secondary" id="signOutBtn">Sign out</button></div></div>
  <div id="accountFeedback" class="notice hidden" role="status"></div>
 </section>
-<div id="bitWelcomeRack" aria-hidden="true"><canvas id="bitChemistryCanvas" width="840" height="440"></canvas><svg viewBox="0 0 420 220" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bitGlass"><stop stop-color="#c2f9f2" stop-opacity=".18"/><stop offset=".3" stop-color="#fff" stop-opacity=".025"/><stop offset=".8" stop-color="#b9e9e3" stop-opacity=".045"/><stop offset="1" stop-color="#d6fffa" stop-opacity=".23"/></linearGradient><linearGradient id="bitGlassEdge"><stop stop-color="#a6e7e1"/><stop offset=".5" stop-color="#f3ffff"/><stop offset="1" stop-color="#9cd7d3"/></linearGradient><linearGradient id="bitStand" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff0c9"/><stop offset=".45" stop-color="#d5b477"/><stop offset="1" stop-color="#94734b"/></linearGradient></defs><g><path d="M37 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M41 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M43 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M66 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="54" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="54" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><g><path d="M99 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M103 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M105 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M128 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="116" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="116" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><g><path d="M161 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M165 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M167 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M190 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="178" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="178" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><g><path d="M223 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M227 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M229 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M252 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="240" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="240" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><g><path d="M285 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M289 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M291 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M314 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="302" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="302" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><g><path d="M347 27V145a17 17 0 0 0 34 0V27Z" fill="url(#bitGlass)" stroke="url(#bitGlassEdge)" stroke-width="2.2"/><path d="M351 36V140a13 13 0 0 0 26 0V36" fill="none" stroke="#fff" stroke-opacity=".17"/><path d="M353 40V132" stroke="#fff" stroke-opacity=".46" stroke-width="2.7" stroke-linecap="round"/><path d="M376 45V129" stroke="#8adcd5" stroke-opacity=".3" stroke-width="1.6"/><ellipse cx="364" cy="27" rx="18" ry="4" fill="#10383d" stroke="#edfffa" stroke-width="2"/><ellipse cx="364" cy="27" rx="14" ry="2" fill="#092b32" stroke="#c9e9e5" stroke-opacity=".5"/></g><rect x="24" y="99" width="372" height="9" rx="4.5" fill="url(#bitStand)"/><path d="M29 100H391" stroke="#fff5d9" stroke-opacity=".7"/><rect x="30" y="108" width="7" height="76" rx="3" fill="url(#bitStand)"/><rect x="383" y="108" width="7" height="76" rx="3" fill="url(#bitStand)"/><rect x="18" y="183" width="384" height="13" rx="6.5" fill="#143b40" stroke="#e2c58c" stroke-width="2"/></svg></div>
 <div id="colorOnboarding" class="card hidden"><h3>🎨 My Signature Color</h3><p>What color represents you in your B. I. T. connections? Your color is yours to choose, and you can change it later.</p><div class="field"><label for="signaturePreset">Choose a color or combination</label><select id="signaturePreset"><option value="#39d9d0">Aqua</option><option value="#7df0d0">Mint green</option><option value="blend">Aqua + mint green</option><option value="#e8c77b">Gold</option><option value="#5168ca">Blue</option><option value="#9254c8">Purple</option><option value="#000000">Black</option><option value="#ffffff">White</option><option value="#f39a65">Coral</option><option value="other">Other — describe my color</option></select></div><div class="field hidden" id="signatureCustomWrap"><label for="signatureCustom">Describe your color or blend</label><input id="signatureCustom" placeholder="e.g. seafoam and lavender, emerald green, sunset orange"></div><div class="field"><span class="small bit-heart-picker-label">Choose a heart color</span><div id="signatureHearts" class="bit-color-hearts" role="group" aria-label="Signature color choices"><button type="button" class="bit-color-heart bit-heart-red" data-color="#f44336" aria-label="Red" title="Red">♥</button><button type="button" class="bit-color-heart bit-heart-aqua" data-color="#39d9d0" aria-label="Aqua" title="Aqua">♥</button><button type="button" class="bit-color-heart bit-heart-blue" data-color="#5168ca" aria-label="Blue" title="Blue">♥</button><button type="button" class="bit-color-heart bit-heart-green" data-color="#38c758" aria-label="Green" title="Green">♥</button><button type="button" class="bit-color-heart bit-heart-purple" data-color="#9254c8" aria-label="Purple" title="Purple">♥</button><button type="button" class="bit-color-heart bit-heart-gold" data-color="#e8c77b" aria-label="Gold" title="Gold">♥</button><button type="button" class="bit-color-heart bit-heart-black" data-color="#000000" aria-label="Black" title="Black">♥</button><button type="button" class="bit-color-heart bit-heart-white" data-color="#ffffff" aria-label="White" title="White">♥</button></div></div><div class="field"><label for="signatureColor">Adjust your color</label><input type="color" id="signatureColor" value="#39d9d0"></div><div id="signaturePreview" style="height:46px;border-radius:14px;border:1px solid var(--line);background:linear-gradient(125deg,#39d9d0,#7df0d0);margin:8px 0 14px"></div><button class="btn" id="saveSignatureColor">Save my color</button><p id="colorFeedback" class="small muted" role="status"></p></div><section id="joinNotice" class="card joinNotice hidden" role="status"><h2 id="joinTitle">Your chemistry recipe 🧪</h2><p id="joinDescription">A visual celebration of connection: each color represents one person, moving together without losing what makes them unique. This is a preview, not a task to complete.</p><div class="joinStage" id="joinStage"><div class="ceremonyVials" aria-hidden="true"><svg class="ceremonyVial left" viewBox="0 0 140 180" aria-hidden="true"><defs><clipPath id="vialClipleft"><path d="M53 15 L87 15 L87 71 C87 83 118 109 124 135 C131 160 108 173 70 173 C32 173 9 160 16 135 C22 109 53 83 53 71 Z"/></clipPath></defs><path d="M53 15 L87 15 L87 71 C87 83 118 109 124 135 C131 160 108 173 70 173 C32 173 9 160 16 135 C22 109 53 83 53 71 Z" fill="#c5fffa" fill-opacity=".08" stroke="#e1fffb" stroke-width="5"/><g clip-path="url(#vialClipleft)"><path d="M8 116 Q36 106 70 118 T132 116 L132 181 L8 181Z" fill="var(--a)" opacity=".9"/><path d="M10 116 Q35 106 70 118 T130 116" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="3"/></g><ellipse cx="70" cy="15" rx="22" ry="7" fill="#10383b" stroke="#e1fffb" stroke-width="4"/><path d="M45 105 Q27 135 39 151" fill="none" stroke="white" stroke-opacity=".4" stroke-width="5" stroke-linecap="round"/></svg><svg class="ceremonyVial right" viewBox="0 0 140 180" aria-hidden="true"><defs><clipPath id="vialClipright"><path d="M53 15 L87 15 L87 71 C87 83 118 109 124 135 C131 160 108 173 70 173 C32 173 9 160 16 135 C22 109 53 83 53 71 Z"/></clipPath></defs><path d="M53 15 L87 15 L87 71 C87 83 118 109 124 135 C131 160 108 173 70 173 C32 173 9 160 16 135 C22 109 53 83 53 71 Z" fill="#c5fffa" fill-opacity=".08" stroke="#e1fffb" stroke-width="5"/><g clip-path="url(#vialClipright)"><path d="M8 116 Q36 106 70 118 T132 116 L132 181 L8 181Z" fill="var(--b)" opacity=".9"/><path d="M10 116 Q35 106 70 118 T130 116" fill="none" stroke="#ffffff" stroke-opacity=".45" stroke-width="3"/></g><ellipse cx="70" cy="15" rx="22" ry="7" fill="#10383b" stroke="#e1fffb" stroke-width="4"/><path d="M45 105 Q27 135 39 151" fill="none" stroke="white" stroke-opacity=".4" stroke-width="5" stroke-linecap="round"/></svg></div><svg class="ceremonyTubes" viewBox="0 0 440 390" aria-hidden="true"><path class="tubeGlass" d="M80 38 C116 57 150 78 117 101 S151 129 126 170"/><path class="tubeDye left" d="M80 38 C116 57 150 78 117 101 S151 129 126 170"/><path class="tubeGlass" d="M360 38 C324 57 290 78 323 101 S289 129 314 170"/><path class="tubeDye right" d="M360 38 C324 57 290 78 323 101 S289 129 314 170"/></svg><canvas class="chemistryFluid" width="440" height="390" aria-label="Signature colors blending inside a glass vessel"></canvas><svg class="chemistryGlass" viewBox="0 0 440 390" aria-hidden="true"><defs><linearGradient id="glassSurface" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0ffff" stop-opacity=".19"/><stop offset=".55" stop-color="#dfffff" stop-opacity=".015"/><stop offset="1" stop-color="#b9ffff" stop-opacity=".14"/></linearGradient></defs><path d="M220 192 C192 151 143 142 110 166 C55 205 72 275 116 318 C152 352 192 374 220 384 C248 374 288 352 324 318 C368 275 385 205 330 166 C297 142 248 151 220 192" fill="url(#glassSurface)" stroke="#dfffff" stroke-width="5" stroke-linecap="round"/><path d="M126 170 C151 129 84 123 117 101 S116 57 80 38 M314 170 C289 129 356 123 323 101 S324 57 360 38" fill="none" stroke="#dfffff" stroke-width="22" opacity=".24" stroke-linecap="round"/><path d="M126 170 C151 129 84 123 117 101 S116 57 80 38 M314 170 C289 129 356 123 323 101 S324 57 360 38" fill="none" stroke="#dfffff" stroke-width="5" stroke-linecap="round"/><ellipse cx="80" cy="38" rx="15" ry="7" transform="rotate(-22 80 38)" fill="#10383b" stroke="#dfffff" stroke-width="4"/><ellipse cx="360" cy="38" rx="15" ry="7" transform="rotate(22 360 38)" fill="#10383b" stroke="#dfffff" stroke-width="4"/><path d="M110 214 Q90 257 135 308 M330 214 Q350 257 305 308" fill="none" stroke="#ffffff" stroke-opacity=".32" stroke-width="6" stroke-linecap="round"/></svg></div><p>Let's discover what helps you understand each other better.</p><div class="actions bit-center-actions"><button class="btn" id="joinContinue">Explore our chemistry ⚛️</button><button class="btn secondary" id="replayJoin">Replay our chemistry ⚛️</button></div></section>
  <div class="hero"><div class="eyebrow">Becoming Intentional Together</div><h1>Welcome to B. I. T. <span>Come as you are.</span></h1><p>There's no pressure to do everything today. Choose what feels helpful, or simply take a moment for yourself.</p></div>
  <div class="grid">
@@ -832,62 +823,6 @@ careUpdate();
 
 })();
 </script>
-<script>
-/* One self-contained WebGL chemistry renderer; no external dependencies. */
-(function(){
- const canvas=document.getElementById('bitChemistryCanvas');
- if(!canvas)return;
- const gl=canvas.getContext('webgl',{alpha:true,antialias:false,premultipliedAlpha:false});
- if(!gl)return;
- const vertex='attribute vec2 position;void main(){gl_Position=vec4(position,0.,1.);}';
- const fragment=`
- precision highp float;
- uniform vec2 resolution;
- uniform float time;
- float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
- float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.),f.x),f.y);}
- float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<6;i++){v+=a*noise(p);p=p*2.07+vec2(8.7,3.1);a*=.5;}return v;}
- vec3 palette(float t){
- vec3 a=vec3(.13,.76,.96),b=vec3(.24,.95,.68),c=vec3(1.,.82,.25),d=vec3(1.,.40,.21),e=vec3(.72,.29,.94),f=vec3(1.,.33,.49);
- if(t<.2)return mix(a,b,t*5.);if(t<.4)return mix(b,c,(t-.2)*5.);if(t<.6)return mix(c,d,(t-.4)*5.);if(t<.8)return mix(d,e,(t-.6)*5.);return mix(e,f,(t-.8)*5.);
- }
- void main(){
- vec2 p=gl_FragCoord.xy/resolution*vec2(420.,220.);
- float x=p.x,y=p.y;
- float idx=floor((x-23.)/62.);
- float center=54.+62.*idx;
- float dx=abs(x-center);
- float inside=step(0.,idx)*step(idx,5.)*(1.-smoothstep(15.,17.,dx));
- float bottom=1.-smoothstep(16.,18.,length(vec2(x-center,max(145.-y,0.))));
- float tube=inside*step(27.,y)*step(y,145.)+bottom*step(145.,y)*step(y,162.);
- float t=time*.18;
- vec2 q=vec2((x-center)*.085,y*.055-t);
- float warp=fbm(q*1.7+vec2(sin(q.y*1.7+t),cos(q.x*1.3-t)));
- vec2 flow=q+vec2(1.7*(warp-.5),1.3*(fbm(q+vec2(3.,t))-.5));
- float wisps=fbm(flow*3.1+vec2(t*.8,-t*.9));
- float filaments=fbm(flow*7.5+vec2(-t*.6,t));
- float density=smoothstep(.31,.72,wisps*.56+filaments*.45+.13);
- float plume=smoothstep(36.,96.,y)*(1.-smoothstep(152.,166.,y));
- float tubeAlpha=clamp(density*1.9*plume*tube,0.,.94);
- float spillShape=exp(-pow((y-166.)/16.,2.))*smoothstep(18.,45.,x)*(1.-smoothstep(373.,403.,x));
- float spill=spillShape*smoothstep(.36,.69,fbm(vec2(x*.025-t*.3,y*.09)+vec2(warp*2.,0.)))*.65;
- float alpha=max(tubeAlpha,spill);
- float hue=clamp(x/420.+(warp-.5)*.18,0.,1.);
- vec3 color=palette(hue);
- color=mix(color,vec3(.95,.98,1.),pow(filaments,4.)*.45);
- gl_FragColor=vec4(color,alpha);
- }`;
- function compile(type,source){const shader=gl.createShader(type);gl.shaderSource(shader,source);gl.compileShader(shader);if(!gl.getShaderParameter(shader,gl.COMPILE_STATUS)){gl.deleteShader(shader);return null;}return shader;}
- const vs=compile(gl.VERTEX_SHADER,vertex),fs=compile(gl.FRAGMENT_SHADER,fragment);if(!vs||!fs)return;
- const program=gl.createProgram();gl.attachShader(program,vs);gl.attachShader(program,fs);gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))return;
- gl.useProgram(program);const buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,1,1]),gl.STATIC_DRAW);
- const position=gl.getAttribLocation(program,'position');gl.enableVertexAttribArray(position);gl.vertexAttribPointer(position,2,gl.FLOAT,false,0,0);
- const resolution=gl.getUniformLocation(program,'resolution'),clock=gl.getUniformLocation(program,'time');gl.viewport(0,0,canvas.width,canvas.height);gl.uniform2f(resolution,canvas.width,canvas.height);
- const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
- let frame=0;function draw(ms){gl.uniform1f(clock,reduced?0:ms*.001);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);if(!reduced)frame=requestAnimationFrame(draw);}
- draw(0);
- document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);}else if(!reduced){cancelAnimationFrame(frame);frame=requestAnimationFrame(draw);}});
-})();
-</script>
+
 </body>
 </html>
