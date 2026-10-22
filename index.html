@@ -619,7 +619,7 @@ let invitation='';
 let invitationLink='';
 $('inviteTone').addEventListener('change',()=>{$('inviteOwnWrap').classList.toggle('hidden',$('inviteTone').value!=='own')});
 function bitInviteEmails(){
- return $('inviteContact').value.split(/[\\n,;]+/).map(email=>email.trim().toLowerCase()).filter(Boolean);
+ return $('inviteContact').value.split(/[\n,;]+/).map(email=>email.trim().toLowerCase()).filter(Boolean);
 }
 $('makeInvite').addEventListener('click',async()=>{
  const name=$('partnerName').value.trim();
@@ -641,17 +641,17 @@ $('makeInvite').addEventListener('click',async()=>{
   if(!data?.recipe_id||!Array.isArray(data.invitations)||data.invitations.length!==emails.length)throw Error('Invitation response was incomplete.');
   const lines=data.invitations.map(item=>{
    const url='https://thestillbecomingvillagecircle.org/bit-app/?recipe_invite='+encodeURIComponent(item.token);
-   return item.email+'\\n'+url;
+   return item.email+'\n'+url;
   });
   invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?recipe_invite='+encodeURIComponent(data.invitations[0].token);
-  invitation='You are invited to '+name+' on B. I. T. — Becoming Intentional Together. 💚\\n\\nEach invitation is personal, expires in seven days, and can be accepted only by the invited email account.\\n\\n'+lines.join('\\n\\n');
+  invitation='You are invited to '+name+' on B. I. T. — Becoming Intentional Together. 💚\n\nEach invitation is personal, expires in seven days, and can be accepted only by the invited email account.\n\n'+lines.join('\n\n');
   $('invitePreview').textContent=invitation;
   $('inviteResult').classList.remove('hidden');
-  $('sendInvite').href='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent('B. I. T. invitations — '+name)+'&body='+encodeURIComponent(invitation);
-  $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
+  $('sendInvite').href='mailto:'+encodeURIComponent(data.invitations[0].email)+'?subject='+encodeURIComponent('B. I. T. invitation — '+name)+'&body='+encodeURIComponent('Join '+name+' on B. I. T. 💚\n'+invitationLink);
+  $('textInvite').href='sms:?&body='+encodeURIComponent('Join '+name+' on B. I. T. 💚\n'+invitationLink);
   $('inviteLiquid').style.height='100%';$('inviteProgress').style.width='100%';
   $('inviteVialTitle').textContent='Your shared recipe is ready! ✨';
-  $('inviteVialStatus').textContent=emails.length+' secure invitation '+(emails.length===1?'link':'links')+' created. Send each person only their own link.';
+  $('inviteVialStatus').textContent=emails.length+' secure invitation '+(emails.length===1?'link':'links')+' created. Email and text buttons prepare the first invitation only; copy the list to share other links individually.';
   $('inviteResult').scrollIntoView({behavior:'smooth',block:'nearest'});
   toast('Invitations created. Share each link privately.');
  }catch(e){console.error('Recipe invitation creation failed:',e);toast(e.message||'Could not create invitations.')}
