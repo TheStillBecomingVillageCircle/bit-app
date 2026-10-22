@@ -256,17 +256,17 @@ body:not(.bit-authenticated) #bitWelcomeRack{display:block;width:min(100%,440px)
    <div class="eyebrow">Step 1 · Your vial</div>
    <div class="invitevialrow"><div class="invitevial"><div class="liquid" id="inviteLiquid" style="height:0%;background:linear-gradient(0deg,#39d9d0,#7df0d0)"></div></div><div><strong id="inviteVialTitle">Your vial is ready to begin</strong><p id="inviteVialStatus" class="small muted">Complete each step and watch your liquid rise.</p><div class="labprogress bit-progress-min-width"><span id="inviteProgress"></span></div></div></div>
    <div class="field"><label for="inviteColorChoice">Choose your liquid color</label><select id="inviteColorChoice"><option value="#39d9d0">Aqua</option><option value="#7df0d0">Mint</option><option value="#ff69b4">Pink</option><option value="#ff00cc">Fuchsia</option><option value="#800080">Purple</option><option value="#a020f0">Violet</option><option value="#2563eb">Blue</option><option value="#008000">Green</option><option value="#ffb703">Gold</option><option value="#ff0000">Red</option><option value="#ffa500">Orange</option><option value="#ffffff">White</option><option value="#000000">Black</option><option value="custom">Custom color…</option></select><div class="colorfield null"><input id="inviteColor" type="color" value="#39d9d0" aria-label="Fine-tune your liquid color"><span id="inviteColorName">Aqua</span></div></div>
-   <div class="field"><label for="inviteRelationshipType">What kind of relationship connects you?</label><select id="inviteRelationshipType"><option value="">Choose your relationship</option><option>Romantic relationship</option><option>Polyamorous relationship</option><option>Friendship</option><option>Family</option><option>Chosen family</option><option>Professional partnership</option><option>Other meaningful relationship</option></select></div>
+   <div class="field"><label for="inviteRelationshipType">What kind of relationship connects you?</label><select id="inviteRelationshipType"><option value="">Choose your relationship</option><option value="romantic">Romantic relationship</option><option value="polyamorous">Polyamorous relationship</option><option value="friendship">Friendship</option><option value="family">Family</option><option value="chosen_family">Chosen family</option><option value="professional">Professional partnership</option><option value="other">Other meaningful relationship</option></select></div>
    <div class="field"><label for="inviteParticipantCount">How many people are part of this connection?</label><select id="inviteParticipantCount"><option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option><option value="5">5 people</option><option value="6">6 people</option></select></div>
    <div class="field"><label for="partnerName">What should we call your person or group?</label><input id="partnerName" placeholder="e.g. my favorite human"></div>
-   <div class="field"><label for="inviteContact">Their email address</label><input id="inviteContact" type="email" placeholder="name@example.com" autocomplete="email" required></div>
+   <div class="field"><label for="inviteContact">Email addresses of the people you are inviting</label><textarea id="inviteContact" rows="3" placeholder="One email address per line" required></textarea><p class="small muted">Enter one email per person. You will receive a separate invitation link for each person.</p></div>
    <div class="field"><label for="inviteTone">💌 Invitation message style (optional)</label><select id="inviteTone"><option value="sweet">Sweet & loving 💛</option><option value="playful">Playful & fun 😂</option><option value="reconnect">Reconnecting 🌿</option><option value="thoughtful">Thoughtful & intentional ✨</option><option value="surprise">Surprise me ✨</option><option value="own">My own words</option></select></div>
    <div class="field hidden" id="inviteOwnWrap"><label for="inviteNote">Your personal note (optional)</label><textarea id="inviteNote" rows="2" placeholder="A little something from your heart…"></textarea></div>
    <button class="btn gold" id="makeInvite">💌 Create my invitation</button>
    <div id="inviteResult" class="hidden bit-mt-14" >
-    <div class="eyebrow">Your invitation is ready 💛</div>
+    <div class="eyebrow">Your invitations are ready 💛</div>
     <div id="invitePreview" class="invitecode">Your invitation will appear here.</div>
-    <div class="actions bit-mt-12" ><a class="btn" id="sendInvite" href="#" role="button">Email invitation</a><a class="btn secondary" id="textInvite" href="#" role="button">Text invitation</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div>
+    <div class="actions bit-mt-12" ><a class="btn" id="sendInvite" href="#" role="button">Email invitations</a><a class="btn secondary" id="textInvite" href="#" role="button">Text invitations</a><button class="btn secondary" id="copyInvite">Copy invitation</button></div>
    </div>
   </div>
   <details class="card span6 bit-top-zero"><summary class="bit-details-label">🧪 When they join</summary><div class="bit-details-content">
@@ -420,16 +420,20 @@ $('signOutBtn').addEventListener('click',async()=>{
 });
 $('menuSignIn').addEventListener('click',()=>{go('home');$('accountPanel').scrollIntoView({behavior:'smooth',block:'start'});});
 $('menuSignOut').addEventListener('click',()=>{$('signOutBtn').click();$('bitMenu').classList.add('hidden');$('bitMenuToggle').setAttribute('aria-expanded','false')});
-const pendingInviteToken=new URLSearchParams(window.location.search).get('invite');
+const inviteParams=new URLSearchParams(window.location.search);
+const pendingRecipeToken=inviteParams.get('recipe_invite');
+const pendingInviteToken=inviteParams.get('invite');
 let inviteAcceptanceStarted=false;
 async function acceptPendingInvite(user){
- if(!pendingInviteToken||!user||!supabaseClient||inviteAcceptanceStarted)return;
+ if((!pendingInviteToken&&!pendingRecipeToken)||!user||!supabaseClient||inviteAcceptanceStarted)return;
  inviteAcceptanceStarted=true;
  accountFeedback('Checking your B. I. T. invitation…');
- const {data,error}=await supabaseClient.rpc('accept_partnership_invite',{raw_token:pendingInviteToken});
+ const {data,error}=pendingRecipeToken
+  ?await supabaseClient.rpc('accept_recipe_invite',{raw_token:pendingRecipeToken})
+  :await supabaseClient.rpc('accept_partnership_invite',{raw_token:pendingInviteToken});
  if(error){inviteAcceptanceStarted=false;const own=/cannot accept your own invitation/i.test(error.message||'');accountFeedback(own?'You are signed into the account that sent this invitation. Sign out, then sign in or create an account using the invited email address to accept it.':(error.message||'Could not accept this invitation. Check the link and account you signed in with.'));return}
  window.history.replaceState({},document.title,window.location.pathname);
- accountFeedback('You joined the shared B. I. T. space. Both accounts are now connected.',true);
+ accountFeedback('You accepted your B. I. T. invitation. Your shared recipe is connected.',true);
  toast('B. I. T. invitation accepted!');
   await loadSharedConversation(user);
 }
@@ -438,7 +442,7 @@ if(supabaseClient){
   if(error){accountFeedback(error.message);return}
   const user=data.session?.user;
   if(user){showAccount(user);currentUserId=user.id;showColorOnboarding(user);await saveProfile(user);await bitLoadOwnColor(user);await acceptPendingInvite(user);await loadSharedConversation(user)}
-  else if(pendingInviteToken){showAccount(null);accountFeedback('You have a B. I. T. invitation. Create an account or sign in with the email address it was sent to, then B. I. T. will connect you both.')}
+  else if(pendingInviteToken||pendingRecipeToken){showAccount(null);accountFeedback('You have a B. I. T. invitation. Create an account or sign in with the invited email address to accept it.')}
   else{showAccount(null)}
  });
  supabaseClient.auth.onAuthStateChange((_event,session)=>{showAccount(session?.user||null);currentUserId=session?.user?.id||null;if(session?.user){showColorOnboarding(session.user);acceptPendingInvite(session.user);loadSharedConversation(session.user);bitLoadOwnColor(session.user)}else{activePartnership=null;bitPartnerColor=null;bitApplyCeremonyColors();messages=[];renderMessages()}});
@@ -614,43 +618,43 @@ function renderMessages(){
 let invitation='';
 let invitationLink='';
 $('inviteTone').addEventListener('change',()=>{$('inviteOwnWrap').classList.toggle('hidden',$('inviteTone').value!=='own')});
+function bitInviteEmails(){
+ return $('inviteContact').value.split(/[\\n,;]+/).map(email=>email.trim().toLowerCase()).filter(Boolean);
+}
 $('makeInvite').addEventListener('click',async()=>{
- const name=$('partnerName').value.trim()||'my person';
- const contact=$('inviteContact').value.trim().toLowerCase();
- const color=$('inviteColor').value;
- if(!supabaseClient){toast('B. I. T. account service is unavailable. Refresh and try again.');return}
- if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)){toast('Enter a valid email address for your person.');$('inviteContact').focus();return}
+ const name=$('partnerName').value.trim();
+ const type=$('inviteRelationshipType').value;
+ const capacity=Number($('inviteParticipantCount').value);
+ const emails=bitInviteEmails();
+ if(!supabaseClient){toast('Account service is unavailable. Refresh and try again.');return}
+ if(!type){toast('Choose your relationship type.');return}
+ if(!name){toast('Name your shared recipe.');$('partnerName').focus();return}
+ if(emails.length!==capacity-1 || new Set(emails).size!==emails.length || emails.some(email=>!/^\\S+@\\S+\\.\\S+$/.test(email))){
+  toast('Enter '+(capacity-1)+' different valid email '+(capacity===2?'address.':'addresses.') );$('inviteContact').focus();return;
+ }
  const {data:{user},error:userError}=await supabaseClient.auth.getUser();
- if(userError||!user){toast('Sign in to B. I. T. before creating an invitation.');accountFeedback('Sign in to B. I. T. before creating an invitation.');return}
- const button=$('makeInvite');button.disabled=true;button.textContent='Creating secure invitation…';
+ if(userError||!user){toast('Sign in before creating invitations.');return}
+ const button=$('makeInvite');button.disabled=true;button.textContent='Creating secure invitations…';
  try{
-  const tokenBytes=new Uint8Array(32);crypto.getRandomValues(tokenBytes);
-  const token=Array.from(tokenBytes,b=>b.toString(16).padStart(2,'0')).join('');
-  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(token));
-  const tokenHash=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
-  const {data:partnership,error:partnershipError}=await supabaseClient.from('partnerships').insert({member_one:user.id,status:'pending'}).select('id').single();
-  if(partnershipError)throw partnershipError;
-  const {error:inviteError}=await supabaseClient.from('partnership_invites').insert({partnership_id:partnership.id,inviter_id:user.id,invitee_email:contact,token_hash:tokenHash});
-  if(inviteError)throw inviteError;
-  invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?invite='+token;
-  const tone=$('inviteTone').value;
-  const notes={sweet:'I would love for us to make more beautiful moments together, one conversation at a time. 💛',playful:'Look what I found! Something we can try together, laugh through, and learn a little more about each other. 😂',reconnect:'I miss the little moments when we really connect. I would love for us to make room for more of them. 🌿',thoughtful:'You matter to me, and I would love to keep discovering how we can understand and support each other better. ✨'};
-  const keys=Object.keys(notes);
-  const note=tone==='own'?$('inviteNote').value.trim():notes[tone==='surprise'?keys[Math.floor(Math.random()*keys.length)]:tone];
-  const personalWords=note ? '\n\n'+note : '';
-  invitation='Hey '+name+' 💛\n\nI came across something I would love for us to experience together. It is called B. I. T. — Becoming Intentional Together. 💚\n\nIt is a little space where we can laugh, learn more about each other, listen with care, and make room for the kind of connection we both deserve. No pressure, no need to have all the answers. Just two people choosing to keep becoming, intentionally, together. 🧪✨'+personalWords+'\n\nTo connect with me on B. I. T., open the link below, sign in or create your account, and accept this invitation. Our accounts will connect only after you accept.\n\nAccept your invitation to B. I. T.:\n'+invitationLink+'\n\nBetter Communication. Brighter Tomorrows. 💛';
+  const {data,error}=await supabaseClient.rpc('create_shared_recipe',{recipe_name:name,recipe_type:type,recipe_capacity:capacity,invitee_emails:emails});
+  if(error)throw error;
+  if(!data?.recipe_id||!Array.isArray(data.invitations)||data.invitations.length!==emails.length)throw Error('Invitation response was incomplete.');
+  const lines=data.invitations.map(item=>{
+   const url='https://thestillbecomingvillagecircle.org/bit-app/?recipe_invite='+encodeURIComponent(item.token);
+   return item.email+'\\n'+url;
+  });
+  invitationLink='https://thestillbecomingvillagecircle.org/bit-app/?recipe_invite='+encodeURIComponent(data.invitations[0].token);
+  invitation='You are invited to '+name+' on B. I. T. — Becoming Intentional Together. 💚\\n\\nEach invitation is personal, expires in seven days, and can be accepted only by the invited email account.\\n\\n'+lines.join('\\n\\n');
   $('invitePreview').textContent=invitation;
   $('inviteResult').classList.remove('hidden');
-  $('inviteResult').scrollIntoView({behavior:'smooth',block:'nearest'});
-  $('sendInvite').href='mailto:'+contact+'?subject='+encodeURIComponent('Your invitation to B. I. T. — Becoming Intentional Together')+'&body='+encodeURIComponent(invitation);
+  $('sendInvite').href='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent('B. I. T. invitations — '+name)+'&body='+encodeURIComponent(invitation);
   $('textInvite').href='sms:?&body='+encodeURIComponent(invitation);
-  if($('inviteSelfLiquid'))$('inviteSelfLiquid').style.background='linear-gradient(0deg,'+color+','+color+'cc)';
-  if($('inviteOtherName'))$('inviteOtherName').textContent=name;
   $('inviteLiquid').style.height='100%';$('inviteProgress').style.width='100%';
-  $('inviteVialTitle').textContent='Your invitation is ready! ✨';
-  $('inviteVialStatus').textContent='Secure invitation created for '+contact+'. It expires in seven days and can be accepted once.';
-  toast('Invitation ready. Open email draft or copy the invitation.');
- }catch(e){console.error('B. I. T. invitation creation failed:',e);toast(e.message||'Could not create the invitation.')}
+  $('inviteVialTitle').textContent='Your shared recipe is ready! ✨';
+  $('inviteVialStatus').textContent=emails.length+' secure invitation '+(emails.length===1?'link':'links')+' created. Send each person only their own link.';
+  $('inviteResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+  toast('Invitations created. Share each link privately.');
+ }catch(e){console.error('Recipe invitation creation failed:',e);toast(e.message||'Could not create invitations.')}
  finally{button.disabled=false;button.textContent='💌 Create my invitation'}
 });
 $('openRecipeGame').addEventListener('click',()=>{const name=$('partnerName').value.trim();$('labSelfName').value=$('labSelfName').value||'You';$('labPartnerNames').value=$('labPartnerNames').value||(name||'Your person');$('labGroupName').value=$('labGroupName').value||'Our connection';$('labPeople').value='2';drawLabColorPickers();renderVials(2,[],[]);$('recipeRoomDetails').open=true;$('recipeRoomDetails').scrollIntoView({behavior:'smooth',block:'start'});});
